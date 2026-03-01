@@ -1,0 +1,26 @@
+
+> renewrx-mobile@0.1.0 build
+> next build
+
+▲ Next.js 16.1.6 (Turbopack)
+- Environments: .env.local
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 1629.0ms
+  Running TypeScript ...
+  Collecting page data using 11 workers ...
+  Generating static pages using 11 workers (0/9) ...
+⨯ useSearchParams() should be wrapped in a suspense boundary at page "/". Read more: https://nextjs.org/docs/messages/missing-suspense-with-csr-bailout
+    at Q (/Users/rhythm/Documents/Work/RenewRx/Stakeholder Demo/renewrx-mobile/.next/server/chunks/ssr/node_modules_cf1f3d2c._.js:2:2111)
+    at o (/Users/rhythm/Documents/Work/RenewRx/Stakeholder Demo/renewrx-mobile/.next/server/chunks/ssr/node_modules_cf1f3d2c._.js:4:5284)
+    at q (/Users/rhythm/Documents/Work/RenewRx/Stakeholder Demo/renewrx-mobile/.next/server/chunks/ssr/src_app_(dashboard)_layout_552f0f16.js:1:14610)
+    at an (/Users/rhythm/Documents/Work/RenewRx/Stakeholder Demo/renewrx-mobile/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.prod.js:2:84360)
+    at ai (/Users/rhythm/Documents/Work/RenewRx/Stakeholder Demo/renewrx-mobile/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.prod.js:2:86179)
+    at al (/Users/rhythm/Documents/Work/RenewRx/Stakeholder Demo/renewrx-mobile/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.prod.js:2:107953)
+    at as (/Users/rhythm/Documents/Work/RenewRx/Stakeholder Demo/renewrx-mobile/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.prod.js:2:105368)
+    at aa (/Users/rhythm/Documents/Work/RenewRx/Stakeholder Demo/renewrx-mobile/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.prod.js:2:84712)
+    at ai (/Users/rhythm/Documents/Work/RenewRx/Stakeholder Demo/renewrx-mobile/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.prod.js:2:86228)
+    at ai (/Users/rhythm/Documents/Work/RenewRx/Stakeholder Demo/renewrx-mobile/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.prod.js:2:104708)
+Error occurred prerendering page "/". Read more: https://nextjs.org/docs/messages/prerender-error
+Export encountered an error on /(dashboard)/page: /, exiting the build.
+⨯ Next.js build worker exited with code: 1 and signal: null

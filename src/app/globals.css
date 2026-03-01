@@ -2,14 +2,41 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: var(--color-neutral-950);
 }
 
 @theme inline {
+  /* Derived from #2F4358 (Hue: 211, Sat: 30%) */
+  --color-neutral-50: #f8fafb;
+  --color-neutral-100: #f0f3f6;
+  --color-neutral-200: #e1e6eb;
+  --color-neutral-300: #cad3dc;
+  --color-neutral-400: #a3b1bd;
+  --color-neutral-500: #607990;
+  --color-neutral-600: #475a6c;
+  --color-neutral-700: #3b4b5a;
+  --color-neutral-800: #2f4358;
+  --color-neutral-900: #1e2c3a;
+  --color-neutral-950: #0f161d;
+
+  /* Default values */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Set default border color for 'border' utility */
+  --color-border: var(--color-neutral-200);
+}
+
+@layer base {
+
+  *,
+  ::after,
+  ::before,
+  ::placeholder {
+    border-color: var(--color-neutral-200);
+  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -20,7 +47,7 @@
 }
 
 body {
-  background: var(--background);
+  background: var(--color-neutral-200);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
