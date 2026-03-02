@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { PiArrowRight, PiHeartbeat, PiDeviceMobileSlash, PiLink } from "react-icons/pi";
 import { Button } from "../ui";
 import StressLogSheet from "./stress-log-sheet";
+import SelectStressModeSheet from "./select-stress-mode-sheet";
+import PPGStressMeasure from "../screens/ppg-stress-measure";
 import { useDeveloper } from "@/context/developer-context";
 import {
     getLatestStress,
@@ -24,6 +26,8 @@ export default function StressTrackerWidget() {
     const router = useRouter();
     const { toggles } = useDeveloper();
     const [sheetOpen, setSheetOpen] = useState(false);
+    const [modeSheetOpen, setModeSheetOpen] = useState(false);
+    const [ppgOpen, setPpgOpen] = useState(false);
     const [ahConnected, setAhConnected] = useState(false);
     const [latest, setLatest] = useState(null);
 
@@ -41,6 +45,20 @@ export default function StressTrackerWidget() {
 
     const handleLog = (data) => {
         saveStressLog(data);
+        refreshData();
+    };
+
+    const handlePpgResult = (result) => {
+        const now = new Date();
+        saveStressLog({
+            date: now.toISOString().split("T")[0],
+            time: `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`,
+            hrv: result.hrv,
+            rhr: result.bpm,
+            stressScore: result.stressScore,
+            rmssd: result.rmssd,
+            source: "camera",
+        });
         refreshData();
     };
 
@@ -153,7 +171,7 @@ export default function StressTrackerWidget() {
                         variant="secondary"
                         className="flex-1"
                         size="lg"
-                        onClick={() => setSheetOpen(true)}
+                        onClick={() => setModeSheetOpen(true)}
                     >
                         {latest ? "CHECK-IN" : "LOG CHECK-IN"}
                     </Button>
@@ -181,11 +199,26 @@ export default function StressTrackerWidget() {
                 )}
             </div>
 
-            {/* Log sheet */}
+            {/* Log sheets */}
             <StressLogSheet
                 open={sheetOpen}
                 onClose={() => setSheetOpen(false)}
                 onLog={handleLog}
+            />
+
+            <SelectStressModeSheet
+                open={modeSheetOpen}
+                onClose={() => setModeSheetOpen(false)}
+                onSelectMode={(mode) => {
+                    if (mode === "camera") setPpgOpen(true);
+                    else setSheetOpen(true);
+                }}
+            />
+
+            <PPGStressMeasure
+                open={ppgOpen}
+                onClose={() => setPpgOpen(false)}
+                onResult={handlePpgResult}
             />
         </div>
     );

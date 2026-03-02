@@ -18,6 +18,7 @@ import AppHeader from "../layout/app-header";
 import DatePicker from "../layout/date-picker";
 import { Button, BottomSheet } from "../ui";
 import StressLogSheet from "../widget/stress-log-sheet";
+import { StressReadingCard, SelectStressModeSheet } from "../widget";
 import PPGStressMeasure from "./ppg-stress-measure";
 import AppleHealthModal from "./apple-health-modal";
 import { useDeveloper } from "@/context/developer-context";
@@ -110,6 +111,7 @@ export default function StressDetailScreen() {
     const [syncing, setSyncing] = useState(false);
     const [modalOpen, setModalOpen] = useState(false);
     const [ppgOpen, setPpgOpen] = useState(false);
+    const [modeSheetOpen, setModeSheetOpen] = useState(false);
 
     // Load logs
     useEffect(() => {
@@ -231,36 +233,18 @@ export default function StressDetailScreen() {
                 {/* Section header */}
                 {!isEmpty && (
                     <div className="px-6 py-5 flex items-center justify-between">
-                        <h2 className="text-neutral-800 text-xl font-medium tracking-[0.2px]">
-                            Stress & HRV Logs
+                        <h2 className="text-neutral-800 text-xl font-bold tracking-tight">
+                            History
                         </h2>
-                        <div className="flex items-center gap-2">
-                            <Button
-                                variant="primary"
-                                size="md"
-                                className="max-w-44"
-                                onClick={() => setPpgOpen(true)}
-                            >
-                                <div className="flex items-center gap-1.5">
-                                    <PiHeartbeat size={14} />
-                                    <span>MEASURE</span>
-                                </div>
-                            </Button>
-                            <Button
-                                variant="secondary"
-                                size="md"
-                                className="max-w-44"
-                                onClick={() => {
-                                    setEditingLog(null);
-                                    setSheetOpen(true);
-                                }}
-                            >
-                                <div className="flex items-center gap-1.5">
-                                    <PiPlusBold size={12} />
-                                    <span>LOG</span>
-                                </div>
-                            </Button>
-                        </div>
+                        <Button
+                            variant="secondary"
+                            size="md"
+                            className="w-auto px-4 !h-10 text-[13px] font-bold"
+                            onClick={() => setModeSheetOpen(true)}
+                        >
+                            <PiPlusBold size={14} className="mr-2" />
+                            ADD LOG
+                        </Button>
                     </div>
                 )}
 
@@ -282,18 +266,10 @@ export default function StressDetailScreen() {
                                 <Button
                                     variant="primary"
                                     size="xl"
-                                    className="w-full"
-                                    onClick={() => setPpgOpen(true)}
+                                    className="w-full !h-14 font-bold tracking-tight text-base"
+                                    onClick={() => setModeSheetOpen(true)}
                                 >
-                                    <PiHeartbeat size={18} className="mr-2" /> Measure Stress
-                                </Button>
-                                <Button
-                                    variant="secondary"
-                                    size="xl"
-                                    className="w-full"
-                                    onClick={() => { setEditingLog(null); setSheetOpen(true); }}
-                                >
-                                    Log check-in manually
+                                    <PiPlusBold size={20} className="mr-2" /> Start Tracking
                                 </Button>
                             </div>
                         </div>
@@ -306,7 +282,7 @@ export default function StressDetailScreen() {
                                     </p>
                                     <div className="flex flex-col gap-3">
                                         {section.entries.map((entry) => (
-                                            <StressCard
+                                            <StressReadingCard
                                                 key={entry.id}
                                                 entry={entry}
                                                 onEdit={() => {
@@ -365,6 +341,18 @@ export default function StressDetailScreen() {
                 initialData={editingLog}
             />
 
+            <SelectStressModeSheet
+                open={modeSheetOpen}
+                onClose={() => setModeSheetOpen(false)}
+                onSelectMode={(mode) => {
+                    if (mode === "camera") setPpgOpen(true);
+                    else {
+                        setEditingLog(null);
+                        setSheetOpen(true);
+                    }
+                }}
+            />
+
             {/* Delete confirmation */}
             <BottomSheet
                 open={deleteSheetOpen}
@@ -395,59 +383,4 @@ export default function StressDetailScreen() {
     );
 }
 
-// ─── Stress Card ─────────────────────────────────────────────────────
 
-function StressCard({ entry, onEdit, onDelete }) {
-    const levelInfo = getStressLevel(entry);
-
-    return (
-        <div className="bg-white rounded-2xl border p-4">
-            {/* Top row */}
-            <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2.5">
-                    <div className={`w-10 h-10 rounded-full ${levelInfo.bg} flex items-center justify-center shrink-0`}>
-                        <PiHeartbeat size={18} className={levelInfo.color} />
-                    </div>
-                    <div className="flex flex-col">
-                        <div className="flex items-baseline gap-2">
-                            {(entry.source === "phone" || entry.source === "camera") ? (
-                                <>
-                                    <span className="text-lg text-neutral-800 font-bold">{entry.hrv} <span className="text-[10px] font-medium text-neutral-500 uppercase tracking-wider relative -top-0.5">MS HRV</span></span>
-                                    <span className="text-lg text-neutral-400 font-bold px-1">•</span>
-                                    <span className="text-lg text-neutral-800 font-bold">{entry.rhr} <span className="text-[10px] font-medium text-neutral-500 uppercase tracking-wider relative -top-0.5">BPM RHR</span></span>
-                                </>
-                            ) : (
-                                <span className="text-base text-neutral-800 font-bold tracking-tight">Perceived Stress</span>
-                            )}
-                        </div>
-                        <span className="text-[11px] text-neutral-400 font-medium flex items-center mt-0.5 gap-1.5">
-                            {entry.time || ""}
-                            <span className="inline-block px-1.5 py-0.5 bg-neutral-100 text-neutral-500 text-[9px] font-medium rounded-md uppercase tracking-wide">
-                                {entry.source === "phone" ? "Apple Health" : entry.source === "camera" ? "PPG Camera" : "Check-in"}
-                            </span>
-                        </span>
-                    </div>
-                </div>
-                <div className="flex items-center gap-1">
-                    <div className={`px-2 py-1 ${levelInfo.bg} rounded-lg mr-1`}>
-                        <span className={`text-[10px] font-bold ${levelInfo.color} uppercase tracking-wider`}>
-                            {levelInfo.label}
-                        </span>
-                    </div>
-                    <button
-                        onClick={onEdit}
-                        className="w-8 h-8 flex items-center justify-center rounded-full border hover:bg-neutral-50 transition-colors"
-                    >
-                        <PiPencilSimple size={14} className="text-neutral-500" />
-                    </button>
-                    <button
-                        onClick={onDelete}
-                        className="w-8 h-8 flex items-center justify-center rounded-full border hover:bg-red-50 transition-colors"
-                    >
-                        <PiTrash size={14} className="text-red-400" />
-                    </button>
-                </div>
-            </div>
-        </div>
-    );
-}
