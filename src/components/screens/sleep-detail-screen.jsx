@@ -13,6 +13,7 @@ import {
     PiSpinnerGap,
     PiCheckCircleFill,
     PiArrowRight,
+    PiGear,
 } from "react-icons/pi";
 import { PiHeartFill } from "react-icons/pi";
 import AppHeader from "../layout/app-header";
@@ -51,48 +52,44 @@ function AppleHealthBanner({ connected, syncing, onConnect }) {
     return (
         <div
             onClick={!connected ? onConnect : undefined}
-            className={`bg-red-50 px-5 py-3 flex items-center gap-3 border-b border-neutral-100 ${!connected ? "cursor-pointer active:bg-neutral-50" : ""} transition-colors`}
+            className={`bg-white px-5 py-3 flex items-center justify-between border-b border-neutral-100 ${!connected ? "cursor-pointer active:bg-neutral-50" : ""} transition-colors`}
         >
-            <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center shrink-0 shadow-sm border border-neutral-100">
-                <PiHeartFill size={22} className="text-[#ff3b30]" />
-            </div>
-
-            <div className="flex-1 min-w-0">
-                {!connected ? (
-                    <>
-                        <span className="text-[10px] font-bold text-[#ff3b30] uppercase tracking-wider">Apple Health</span>
-                        <p className="text-base text-neutral-800 font-medium tracking-[0.2px] leading-tight mt-0.5">
-                            Connect to Apple Health
-                        </p>
-                    </>
-                ) : syncing ? (
-                    <>
-                        <div className="flex items-center gap-2">
-                            <PiSpinnerGap size={14} className="text-neutral-800 animate-spin shrink-0" />
-                            <p className="text-base text-neutral-800 font-medium tracking-[0.2px]">
-                                Syncing your data{dots}
+            <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shrink-0 border border-neutral-100 shadow-[0_2px_8px_rgba(0,0,0,0.02)]">
+                    <PiHeartFill size={20} className="text-[#ff3b30]" />
+                </div>
+                <div className="flex flex-col">
+                    {!connected ? (
+                        <>
+                            <span className="text-[10px] font-bold text-[#ff3b30] uppercase tracking-wider mb-0.5">Apple Health</span>
+                            <span className="text-sm text-[#2D3F58] font-bold tracking-tight">Connect to Apple Health</span>
+                        </>
+                    ) : syncing ? (
+                        <>
+                            <div className="flex items-center gap-2">
+                                <PiSpinnerGap size={14} className="text-neutral-800 animate-spin shrink-0" />
+                                <p className="text-base text-neutral-800 font-medium tracking-[0.2px]">
+                                    Syncing your data{dots}
+                                </p>
+                            </div>
+                            <p className="text-sm text-neutral-400 tracking-[0.2px] mt-0.5">
+                                Apple Health · This may take a moment
                             </p>
-                        </div>
-                        <p className="text-sm text-neutral-400 tracking-[0.2px] mt-0.5">
-                            Apple Health · This may take a moment
-                        </p>
-                    </>
-                ) : (
-                    <>
-                        <div className="flex items-center gap-1.5">
-                            <PiCheckCircleFill size={14} className="text-green-600 shrink-0" />
-                            <p className="text-base text-neutral-800 font-medium tracking-[0.2px]">
-                                Apple Health · Data up to date
-                            </p>
-                        </div>
-                        <p className="text-sm text-neutral-400 tracking-[0.2px] mt-0.5">
-                            Last synced just now
-                        </p>
-                    </>
-                )}
+                        </>
+                    ) : (
+                        <>
+                            <div className="flex items-center gap-1.5">
+                                <PiCheckCircleFill size={14} className="text-green-600 shrink-0" />
+                                <p className="text-base text-neutral-800 font-medium tracking-[0.2px]">
+                                    Apple Health · Data up to date
+                                </p>
+                            </div>
+                            <p className="text-[11px] font-medium text-neutral-400 mt-0.5">Last synced just now</p>
+                        </>
+                    )}
+                </div>
             </div>
-
-            {!connected && <PiArrowRight size={20} className="text-neutral-400 shrink-0" />}
+            {!connected && <PiArrowRight size={20} className="text-neutral-400 shrink-0 ml-2" />}
         </div>
     );
 }
@@ -200,6 +197,11 @@ export default function SleepDetailScreen() {
                 <AppHeader
                     pageTitle="Sleep Tracker"
                     onBack={() => router.push("/")}
+                    rightContent={
+                        <button onClick={() => router.push("/device-management")} className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-neutral-50 transition-colors">
+                            <PiGear size={24} className="text-[#2f4358]" />
+                        </button>
+                    }
                 />
                 <DatePicker
                     mode="week"
@@ -265,39 +267,27 @@ export default function SleepDetailScreen() {
 
                 <div className="px-6 pb-10 w-full overflow-hidden">
                     {isEmpty ? (
-                        <div className="flex flex-col items-center justify-center py-20 text-center px-4 h-160">
-                            <div className="w-14 h-14 bg-indigo-50 rounded-2xl flex items-center justify-center mb-6">
-                                <PiMoon size={28} className="text-indigo-300" />
+                        <div className="flex flex-col items-center justify-center py-20 text-center px-8 h-[60vh]">
+                            <div className="w-14 h-14 bg-[#EEECFF] rounded-2xl flex items-center justify-center mb-6 border border-[#E0DCFF]">
+                                <PiMoon size={28} className="text-[#818CF8]" />
                             </div>
-                            <h3 className="text-neutral-800 text-xl mb-2 tracking-[0.2px] font-semibold">
+                            <h3 className="text-[#2D3F58] text-lg mb-2 tracking-tight font-bold">
                                 No sleep data yet
                             </h3>
-                            <p className="text-neutral-500 text-base mb-7 leading-relaxed tracking-[0.2px] max-w-[280px]">
+                            <p className="text-neutral-500 text-[15px] mb-8 leading-relaxed tracking-tight font-medium max-w-[280px]">
                                 {toggles.deviceData && !ahConnected
                                     ? "Connect Apple Health or log your sleep to track patterns and improve your rest."
                                     : "Log your sleep to track patterns and improve your rest."
                                 }
                             </p>
-                            <div className="flex flex-col gap-3 w-full max-w-[240px]">
-                                {toggles.deviceData && !ahConnected && (
-                                    <Button
-                                        variant="primary"
-                                        size="lg"
-                                        onClick={() => setModalOpen(true)}
-                                    >
-                                        <PiHeartFill size={18} className="mr-2" />
-                                        Connect Apple Health
-                                    </Button>
-                                )}
+                            <div className="flex flex-col gap-3 w-full max-w-[260px]">
                                 <Button
-                                    variant={toggles.deviceData && !ahConnected ? "secondary" : "primary"}
-                                    size="lg"
-                                    onClick={() => {
-                                        setEditingLog(null);
-                                        setSheetOpen(true);
-                                    }}
+                                    variant="secondary"
+                                    size="xl"
+                                    className="w-full"
+                                    onClick={() => { setEditingLog(null); setSheetOpen(true); }}
                                 >
-                                    Log manually
+                                    Log check-in directly
                                 </Button>
                             </div>
                         </div>

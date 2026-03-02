@@ -1,45 +1,95 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { useRouter } from "next/navigation";
-import { PiArrowRight, PiPlusBold, PiX } from "react-icons/pi";
+import { useSearchParams, useRouter } from "next/navigation";
+import { PiArrowRight, PiPlusBold, PiX, PiGear, PiSpinnerGap, PiCheckCircleFill } from "react-icons/pi";
 import { AppHeader } from "../layout";
 import DatePicker from "../layout/date-picker";
 import { Button } from "../ui";
-import { BGLogSheet, BGReadingCard } from "../widget";
-import { getBGLogs } from "@/lib/bg-utils";
+import { BGLogSheet, BGReadingCard, CGMChart } from "../widget";
+import { getBGLogs, getDexcomConnected, setDexcomConnected as persistDexcomConnected, generateCGMSyncedReadings } from "@/lib/bg-utils";
 
-function CGMBanner() {
+function CGMBanner({ connected, syncing, onConnect }) {
+    const [dots, setDots] = useState(".");
+
+    useEffect(() => {
+        if (!syncing) return;
+        const interval = setInterval(() => {
+            setDots((d) => (d.length >= 3 ? "." : d + "."));
+        }, 500);
+        return () => clearInterval(interval);
+    }, [syncing]);
+
     return (
-        <div className="bg-[#EEDFE5] px-5 py-4 flex items-center gap-3 border-b border-neutral-100 cursor-pointer active:bg-[#e4d3da] transition-colors">
+        <div
+            onClick={!connected ? onConnect : undefined}
+            className={`px-5 py-4 flex items-center gap-3 border-b border-neutral-100 transition-colors ${!connected ? "bg-[#EEDFE5] cursor-pointer active:bg-[#e4d3da]" : "bg-green-50/50"}`}
+        >
             {/* Device icon */}
-            <div className="w-[42px] h-[42px] bg-white/50 rounded-lg flex items-center justify-center shrink-0 border border-white">
-                <div className="w-6 h-6 rounded-full bg-white relative flex items-center justify-center overflow-hidden">
-                    <div className="w-1.5 h-1.5 rounded-full bg-neutral-400/20 absolute"></div>
-                    <div className="w-1 h-1 rounded-full bg-neutral-600 absolute ml-[6px]"></div>
-                </div>
+            <div className={`w-[42px] h-[42px] rounded-lg flex items-center justify-center shrink-0 ${!connected ? "bg-white/50 border border-white" : "bg-white shadow-sm border border-neutral-100"}`}>
+                {connected ? (
+                    <div className="w-6 h-6 rounded-full bg-[#189B37] flex items-center justify-center font-bold text-white text-[6px]">
+                        dexcom
+                    </div>
+                ) : (
+                    <div className="w-6 h-6 rounded-full bg-white relative flex items-center justify-center overflow-hidden">
+                        <div className="w-1.5 h-1.5 rounded-full bg-neutral-400/20 absolute"></div>
+                        <div className="w-1 h-1 rounded-full bg-neutral-600 absolute ml-[6px]"></div>
+                    </div>
+                )}
             </div>
 
             <div className="flex-1 min-w-0 pr-2">
-                <span className="text-[11px] font-medium text-neutral-500 mb-0.5 block">Get your CGM now!</span>
-                <p className="text-sm text-[#2D264B] font-bold tracking-tight leading-snug">
-                    Onboard your CGM for real-time insights and control of your health.
-                </p>
+                {!connected ? (
+                    <>
+                        <span className="text-[11px] font-medium text-neutral-500 mb-0.5 block">Get your CGM now!</span>
+                        <p className="text-sm text-[#2D264B] font-bold tracking-tight leading-snug">
+                            Onboard your CGM for real-time insights and control of your health.
+                        </p>
+                    </>
+                ) : syncing ? (
+                    <>
+                        <div className="flex items-center gap-2 mb-0.5">
+                            <PiSpinnerGap size={14} className="text-[#189B37] animate-spin shrink-0" />
+                            <p className="text-sm text-neutral-800 font-bold tracking-[0.2px]">
+                                Syncing your readings{dots}
+                            </p>
+                        </div>
+                        <p className="text-[11px] font-medium text-neutral-500 tracking-[0.2px]">
+                            Dexcom · This may take a moment
+                        </p>
+                    </>
+                ) : (
+                    <>
+                        <div className="flex items-center gap-1.5 mb-0.5">
+                            <PiCheckCircleFill size={14} className="text-[#189B37] shrink-0" />
+                            <p className="text-sm text-neutral-800 font-bold tracking-[0.2px]">
+                                Dexcom · Data up to date
+                            </p>
+                        </div>
+                        <p className="text-[11px] font-medium text-neutral-500 tracking-[0.2px]">
+                            Last synced just now
+                        </p>
+                    </>
+                )}
             </div>
 
-            <PiArrowRight size={20} className="text-[#2D264B] shrink-0" />
+            {!connected && <PiArrowRight size={20} className="text-[#2D264B] shrink-0" />}
         </div>
     );
 }
 
 export default function BGDetailScreen() {
     const router = useRouter();
+    const searchParams = useSearchParams();
 
     const [readings, setReadings] = useState([]);
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [sheetOpen, setSheetOpen] = useState(false);
     const [editingReading, setEditingReading] = useState(null);
     const [showDisclaimer, setShowDisclaimer] = useState(true);
+    const [dexcomConnected, setDexcomConnected] = useState(false);
+    const [syncing, setSyncing] = useState(false);
 
     const refreshLogs = () => {
         setReadings(getBGLogs());
@@ -47,7 +97,36 @@ export default function BGDetailScreen() {
 
     useEffect(() => {
         refreshLogs();
+        setDexcomConnected(getDexcomConnected());
     }, []);
+
+    // 1. Detect syncing=true from URL
+    useEffect(() => {
+        if (searchParams.get("syncing") === "true") {
+            persistDexcomConnected(true);
+            setDexcomConnected(true);
+            setSyncing(true);
+
+            const url = new URL(window.location.href);
+            url.searchParams.delete("syncing");
+            window.history.replaceState({}, '', url);
+        }
+    }, [searchParams]);
+
+    // 2. Mock syncing process
+    useEffect(() => {
+        if (syncing) {
+            const timer = setTimeout(() => {
+                const generated = generateCGMSyncedReadings();
+                if (generated && generated.length > 0) {
+                    setReadings(generated);
+                }
+                setSyncing(false);
+            }, 2500);
+
+            return () => clearTimeout(timer);
+        }
+    }, [syncing]);
 
     // Filter by selected date
     const dateStr = useMemo(() => {
@@ -74,13 +153,22 @@ export default function BGDetailScreen() {
                 <AppHeader
                     pageTitle="Blood Glucose"
                     onBack={() => router.push("/")}
+                    rightContent={
+                        <button onClick={() => router.push("/device-management")} className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-neutral-50 transition-colors">
+                            <PiGear size={24} className="text-[#2f4358]" />
+                        </button>
+                    }
                 />
                 <DatePicker
                     mode="single"
                     value={selectedDate}
                     onChange={setSelectedDate}
                 />
-                <CGMBanner />
+                <CGMBanner
+                    connected={dexcomConnected}
+                    syncing={syncing}
+                    onConnect={() => router.push("/cgm-setup")}
+                />
             </div>
 
             {/* Scrollable content */}
@@ -95,11 +183,15 @@ export default function BGDetailScreen() {
                             Log your first reading for the day!
                         </p>
 
-                        <div className="p-[2px] rounded-full bg-gradient-to-r from-[#FFE5E5] via-[#E5E5FF] to-[#E5FFFF] mb-4 shadow-[0_2px_8px_rgba(0,0,0,0.03)] cursor-pointer hover:opacity-90 active:scale-[0.98] transition-all w-60" onClick={() => { setEditingReading(null); setSheetOpen(true); }}>
-                            <div className="bg-white rounded-full w-full h-[52px] flex items-center justify-center border border-white/50">
-                                <span className="text-sm font-bold text-[#2D264B] tracking-wide">+ LOG FINGER-STICK</span>
-                            </div>
-                        </div>
+                        <Button
+                            variant="secondary"
+                            size="xl"
+                            className="max-w-[260px]"
+                            onClick={() => { setEditingReading(null); setSheetOpen(true); }}
+                        >
+                            <PiPlusBold size={14} className="mr-2" />
+                            LOG FINGER-STICK
+                        </Button>
                     </div>
                 ) : (
                     <div className="px-6 py-6 pb-24">
@@ -107,11 +199,15 @@ export default function BGDetailScreen() {
                             <h2 className="text-[#2D264B] text-lg font-bold tracking-tight">
                                 Overview
                             </h2>
-                            <div className="p-[1.5px] rounded-full bg-gradient-to-r from-[#FFE5E5] via-[#E5E5FF] to-[#E5FFFF] shadow-[0_2px_8px_rgba(0,0,0,0.03)] cursor-pointer hover:opacity-90 active:scale-[0.98] transition-all" onClick={() => { setEditingReading(null); setSheetOpen(true); }}>
-                                <div className="bg-white rounded-full px-4 h-9 flex items-center justify-center border border-white/50">
-                                    <span className="text-[13px] font-bold text-[#2D264B]">+ LOG FINGER-STICK</span>
-                                </div>
-                            </div>
+                            <Button
+                                variant="secondary"
+                                size="sm"
+                                className="max-w-44"
+                                onClick={() => { setEditingReading(null); setSheetOpen(true); }}
+                            >
+                                <PiPlusBold size={12} className="mr-1.5" />
+                                LOG FINGER-STICK
+                            </Button>
                         </div>
 
                         <div className="flex flex-col gap-3">
@@ -120,12 +216,22 @@ export default function BGDetailScreen() {
                                     key={reading.id}
                                     reading={reading}
                                     onEdit={() => {
-                                        setEditingReading(reading);
+                                        if (reading.source === "cgm") {
+                                            setEditingReading(null);
+                                        } else {
+                                            setEditingReading(reading);
+                                        }
                                         setSheetOpen(true);
                                     }}
                                 />
                             ))}
                         </div>
+
+                        {dexcomConnected && (
+                            <CGMChart
+                                currentReading={readings.find(r => r.source === 'cgm')?.value || 140}
+                            />
+                        )}
                     </div>
                 )}
             </div>

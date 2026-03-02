@@ -71,7 +71,7 @@ export default function SleepTrackerWidget() {
                     {toggles.deviceData ? (
                         latest ? (
                             /* Has data */
-                            <div className="flex flex-col gap-3">
+                            <div className="flex flex-col gap-3 py-2">
                                 <div className="flex items-center justify-between">
                                     <div className="flex flex-col">
                                         <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-1.5 px-0.5">
@@ -114,35 +114,27 @@ export default function SleepTrackerWidget() {
                                     </div>
                                 )}
                             </div>
-                        ) : !ahConnected ? (
-                            /* Empty state - prompt Apple Health */
-                            <div className="flex flex-col items-center text-center py-6 px-4">
-                                <div className="w-14 h-14 bg-red-50 rounded-2xl flex items-center justify-center mb-4 border border-red-100/50">
-                                    <PiHeartFill size={28} className="text-[#ff3b30]" />
-                                </div>
-                                <h4 className="text-lg text-neutral-800 font-bold tracking-tight mb-1">Apple Health</h4>
-                                <p className="text-neutral-500 text-sm font-medium leading-relaxed max-w-[220px] mb-5">
-                                    Connect to automatically sync your sleep data.
-                                </p>
-                                <Button
-                                    variant="primary"
-                                    size="md"
-                                    className="w-full max-w-[200px]"
-                                    onClick={() => router.push("/sleep-tracker")}
-                                >
-                                    CONNECT NOW
-                                </Button>
-                            </div>
                         ) : (
-                            /* Connected but no data (edge case) */
-                            <div className="flex flex-col items-center text-center py-6 px-4">
-                                <div className="w-14 h-14 bg-indigo-50 rounded-2xl flex items-center justify-center mb-4">
-                                    <PiMoon size={28} className="text-indigo-300" />
+                            /* Empty State: Shows -- values */
+                            <div className="flex flex-col gap-3 py-2">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex flex-col">
+                                        <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-1.5 px-0.5">
+                                            Last Night
+                                        </span>
+                                        <div className="flex items-baseline gap-2">
+                                            <span className="text-4xl font-bold tracking-tight text-neutral-300">
+                                                --h --m
+                                            </span>
+                                        </div>
+                                        <div className="flex items-center gap-2 mt-1.5 opacity-60">
+                                            <PiMoon size={12} className="text-neutral-400" />
+                                            <span className="text-xs font-medium text-neutral-400 tracking-tight">
+                                                No sleep logged
+                                            </span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <h4 className="text-lg text-neutral-800 font-bold tracking-tight mb-1">Track Your Sleep</h4>
-                                <p className="text-neutral-500 text-sm font-medium leading-relaxed max-w-[220px]">
-                                    Better sleep leads to a healthier pregnancy.
-                                </p>
                             </div>
                         )
                     ) : (
@@ -160,7 +152,7 @@ export default function SleepTrackerWidget() {
                 </div>
 
                 {/* Footer buttons */}
-                <div className="flex gap-3 p-4">
+                <div className="flex gap-3 px-4 pt-3 pb-4">
                     {latest && (
                         <Button
                             variant="tertiary"
@@ -177,9 +169,30 @@ export default function SleepTrackerWidget() {
                         size="lg"
                         onClick={() => setSheetOpen(true)}
                     >
-                        {latest ? "LOG SLEEP" : "LOG FIRST"}
+                        {latest ? "LOG SLEEP" : "LOG SLEEP"}
                     </Button>
                 </div>
+
+                {/* Connection Banner inside Widget */}
+                {toggles.deviceData && !ahConnected && (
+                    <div className="px-4 pb-4">
+                        <div
+                            onClick={() => router.push("/sleep-tracker")}
+                            className="flex items-center justify-between p-3 rounded-2xl bg-[#FFF5F5] border border-[#FFE5E5] cursor-pointer hover:bg-[#FFF0F0] transition-colors"
+                        >
+                            <div className="flex items-center gap-3">
+                                <div className="w-9 h-9 bg-white rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex items-center justify-center shrink-0 border border-neutral-100">
+                                    <PiHeartFill size={20} className="text-[#ff3b30]" />
+                                </div>
+                                <div className="flex flex-col items-start min-w-0">
+                                    <span className="text-[10px] font-bold text-[#ff3b30] uppercase tracking-wider mb-0.5">Apple Health</span>
+                                    <span className="text-sm text-[#2D3F58] font-bold tracking-tight truncate w-full">Connect to Apple Health</span>
+                                </div>
+                            </div>
+                            <PiArrowRight size={18} className="text-[#ff3b30] shrink-0 ml-2" />
+                        </div>
+                    </div>
+                )}
             </div>
 
             {/* Log sheet */}
@@ -188,6 +201,6 @@ export default function SleepTrackerWidget() {
                 onClose={() => setSheetOpen(false)}
                 onLog={handleLog}
             />
-        </div>
+        </div >
     );
 }

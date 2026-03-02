@@ -6,12 +6,14 @@ import { Button, DateField, TimeField } from "../ui";
 import BottomSheet from "../ui/bottom-sheet";
 import ScrollWheel from "../ui/scroll-wheel";
 import BPClassificationsSheet from "./bp-classifications";
+import { saveNotification } from "@/lib/notifications-utils";
 import {
     getSystolicStatus,
     getDiastolicStatus,
     getPulseStatus,
     getOverallStatus,
     saveBPReading,
+    getBPReadings,
     updateBPReading,
     deleteBPReading,
 } from "@/lib/bp-utils";
@@ -203,7 +205,52 @@ export default function BPLogSheet({ open, onClose, onLog, initialReading = null
         if (initialReading) {
             updateBPReading(initialReading.id, data);
         } else {
-            saveBPReading(data);
+            const entry = saveBPReading(data);
+
+            // Notification logic with baseline ACOG/Maryanne feedback
+            const isSevere = systolic >= 160 || diastolic >= 110;
+            const isElevated = systolic >= 140 || diastolic >= 90;
+
+            if (isSevere) {
+                saveNotification({
+                    type: "severe",
+                    title: "Action Required: Severe Reading",
+                    message: "Contact your provider or seek medical care immediately. Do not wait."
+                });
+            } else if (isElevated) {
+                // Check for repeat elevated readings within 4 hours
+                const FOUR_HOURS_MS = 4 * 60 * 60 * 1000;
+                const nowMs = new Date(entry.createdAt).getTime();
+
+                const allReadings = [...getBPReadings()];
+                // The current one is at index 0, so we check the one before it (index 1)
+                const lastReading = allReadings[1];
+
+                let isRepeatElevated = false;
+                if (lastReading) {
+                    const lastTime = new Date(lastReading.createdAt).getTime();
+                    const diff = nowMs - lastTime;
+                    const prevElevated = lastReading.systolic >= 140 || lastReading.diastolic >= 90;
+
+                    if (diff < FOUR_HOURS_MS && prevElevated) {
+                        isRepeatElevated = true;
+                    }
+                }
+
+                if (isRepeatElevated) {
+                    saveNotification({
+                        type: "severe",
+                        title: "Action Required: Persistent High BP",
+                        message: "Your blood pressure remains elevated on repeat check. Please contact your provider immediately."
+                    });
+                } else {
+                    saveNotification({
+                        type: "mild",
+                        title: "Elevated Reading Logged",
+                        message: "Rest properly and check again in 4 hours. No need for middle-of-the-night alarms."
+                    });
+                }
+            }
         }
 
         if (onLog) onLog();

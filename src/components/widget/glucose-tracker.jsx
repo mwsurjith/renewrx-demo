@@ -3,13 +3,16 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useRouter } from "next/navigation";
 import { PiArrowRight, PiPlusBold } from "react-icons/pi";
+import { Button } from "../ui";
 import BGLogSheet, { getBGIcon } from "@/components/widget/bg-log-sheet";
-import { getBGLogs, BG_TYPES } from "@/lib/bg-utils";
+import { getBGLogs, BG_TYPES, getDexcomConnected } from "@/lib/bg-utils";
+import { PiCheckCircleFill } from "react-icons/pi";
 
 export default function GlucoseTrackerWidget() {
     const router = useRouter();
     const [sheetOpen, setSheetOpen] = useState(false);
     const [logs, setLogs] = useState([]);
+    const [dexcomConnected, setDexcomConnected] = useState(false);
 
     const refreshData = () => {
         setLogs(getBGLogs());
@@ -17,6 +20,7 @@ export default function GlucoseTrackerWidget() {
 
     useEffect(() => {
         refreshData();
+        setDexcomConnected(getDexcomConnected());
     }, [sheetOpen]);
 
     const handleLog = () => {
@@ -90,27 +94,50 @@ export default function GlucoseTrackerWidget() {
                     </div>
 
                     {/* Log BGM Button */}
-                    <div className="p-[2px] rounded-full bg-gradient-to-r from-[#FFE5E5] via-[#E5E5FF] to-[#E5FFFF] mb-4 shadow-[0_2px_8px_rgba(0,0,0,0.03)] cursor-pointer hover:opacity-90 active:scale-[0.98] transition-all" onClick={() => setSheetOpen(true)}>
-                        <div className="bg-white rounded-full w-full h-11 flex items-center justify-center border border-white/50">
-                            <span className="text-sm font-bold text-[#2D264B]">+ LOG BGM</span>
-                        </div>
-                    </div>
+                    <Button
+                        variant="secondary"
+                        size="md"
+                        className="mb-4"
+                        onClick={() => setSheetOpen(true)}
+                    >
+                        <PiPlusBold size={14} className="mr-2" />
+                        LOG BGM
+                    </Button>
 
                     {/* CGM Banner inside widget */}
-                    <div className="flex items-center justify-between p-4 rounded-2xl bg-[#524B6B] shadow-[0_2px_8px_rgba(0,0,0,0.05)] cursor-pointer hover:bg-[#4a4361] transition-colors" onClick={() => router.push("/blood-glucose")}>
+                    <div className={`flex items-center justify-between p-4 rounded-2xl shadow-[0_2px_8px_rgba(0,0,0,0.05)] cursor-pointer transition-colors ${dexcomConnected ? "bg-[#E5FFF4] hover:bg-[#d1f5e3]" : "bg-[#524B6B] hover:bg-[#4a4361]"}`} onClick={() => !dexcomConnected ? router.push("/cgm-setup") : router.push("/blood-glucose")}>
                         <div className="flex items-center gap-3.5">
-                            <div className="w-[42px] h-[42px] bg-white/10 rounded-[10px] flex items-center justify-center shrink-0 border border-white/5">
-                                <div className="w-6 h-6 rounded-full bg-white relative flex items-center justify-center overflow-hidden">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-neutral-400/20 absolute"></div>
-                                    <div className="w-1 h-1 rounded-full bg-neutral-600 absolute ml-[6px]"></div>
-                                </div>
+                            <div className={`w-[42px] h-[42px] rounded-[10px] flex items-center justify-center shrink-0 ${dexcomConnected ? "bg-white shadow-sm border border-neutral-100" : "bg-white/10 border border-white/5"}`}>
+                                {dexcomConnected ? (
+                                    <div className="w-6 h-6 rounded-full bg-[#189B37] flex items-center justify-center font-bold text-white text-[6px]">
+                                        dexcom
+                                    </div>
+                                ) : (
+                                    <div className="w-6 h-6 rounded-full bg-white relative flex items-center justify-center overflow-hidden">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-neutral-400/20 absolute"></div>
+                                        <div className="w-1 h-1 rounded-full bg-neutral-600 absolute ml-[6px]"></div>
+                                    </div>
+                                )}
                             </div>
                             <div className="flex flex-col flex-1 min-w-0 max-w-[190px]">
-                                <span className="text-xs text-neutral-300 mb-0.5">Get your CGM now!</span>
-                                <p className="text-xs font-bold text-white leading-tight">Onboard your CGM for real-time insights and control of your health.</p>
+                                {dexcomConnected ? (
+                                    <>
+                                        <span className="text-[10px] font-bold text-[#189B37] uppercase tracking-wider mb-0.5">Dexcom Live</span>
+                                        <p className="text-sm font-bold text-neutral-800 leading-tight">Data is up to date</p>
+                                    </>
+                                ) : (
+                                    <>
+                                        <span className="text-xs text-neutral-300 mb-0.5">Get your CGM now!</span>
+                                        <p className="text-xs font-bold text-white leading-tight">Onboard your CGM for real-time insights and control of your health.</p>
+                                    </>
+                                )}
                             </div>
                         </div>
-                        <PiArrowRight size={20} className="text-white shrink-0 ml-2" />
+                        {dexcomConnected ? (
+                            <PiCheckCircleFill size={20} className="text-[#189B37] shrink-0 ml-2" />
+                        ) : (
+                            <PiArrowRight size={20} className="text-white shrink-0 ml-2" />
+                        )}
                     </div>
                 </div>
             </div>

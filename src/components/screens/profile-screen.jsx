@@ -44,11 +44,21 @@ export default function ProfileScreen({ onNavigate }) {
         });
     };
 
+    const handleDeleteAccount = () => {
+        if (typeof window !== "undefined") {
+            // Confirm with user if it's strictly required, or just clear directly for demo reset
+            if (window.confirm("Are you sure you want to reset the demo state? This will clear all local storage.")) {
+                localStorage.clear();
+                window.location.href = "/";
+            }
+        }
+    };
+
     const menuItems = [
         { label: "Account Information", icon: PiUser, action: () => onNavigate?.("edit-profile") },
         { label: "Change Language", icon: PiBookOpen },
         { label: "Customise Experience", icon: PiUserCircle, action: () => onNavigate?.("customize-experience") },
-        { label: "Device Management", icon: PiCpu },
+        { label: "Device Management", icon: PiCpu, action: () => onNavigate ? onNavigate("device-management") : window.location.assign("/device-management") },
         { label: "Surveys & Intake", icon: PiFileText },
         { label: "My Care Pro", icon: PiStethoscope },
         { label: "My Insurance", icon: PiClipboardText },
@@ -136,6 +146,7 @@ export default function ProfileScreen({ onNavigate }) {
                     variant="destructive"
                     size="xl"
                     className="w-full !h-14"
+                    onClick={handleDeleteAccount}
                 >
                     <PiTrash size={18} className="mr-2" />
                     DELETE MY ACCOUNT

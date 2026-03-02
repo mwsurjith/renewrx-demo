@@ -93,68 +93,33 @@ export default function BloodPressureWidget() {
                                 </div>
                             </div>
 
-                            {/* Integrated Connection View */}
-                            <div
-                                onClick={handleIHealthClick}
-                                className={`flex items-center gap-3 p-3 rounded-2xl border transition-all cursor-pointer ${iHealthConnected
-                                    ? "bg-neutral-50/50 border-neutral-100"
-                                    : "bg-purple-50/30 border-purple-100/50"
-                                    }`}
-                            >
-                                <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shrink-0 border border-neutral-100 shadow-sm">
-                                    <img
-                                        src={imgDevice}
-                                        alt="iHealth Device"
-                                        className={`w-full h-full object-contain p-1.5 ${iHealthConnected ? "grayscale-0 opacity-100" : "grayscale opacity-50"}`}
-                                    />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <div className="flex items-center gap-1.5">
-                                        <p className="text-sm text-neutral-800 font-bold tracking-tight">
-                                            {iHealthConnected ? "iHealth Neo LIVE" : "Connect iHealth Neo"}
-                                        </p>
-                                        {iHealthConnected && <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />}
-                                    </div>
-                                    <p className="text-[11px] text-neutral-500 font-medium whitespace-nowrap overflow-hidden text-ellipsis">
-                                        {iHealthConnected ? "Device is active and ready to sync" : "Sync readings automatically"}
-                                    </p>
-                                </div>
-                                <PiArrowUpRightBold size={14} className="text-neutral-300" />
-                            </div>
-                        </div>
-                    ) : iHealthConnected ? (
-                        /* Case 2: No logs, but iHealth connected */
-                        <div className="flex flex-col items-center text-center py-6 px-4">
-                            <div className="w-14 h-14 bg-green-50 rounded-2xl flex items-center justify-center mb-4 relative border border-green-100">
-                                <img
-                                    src={imgDevice}
-                                    alt="iHealth Device"
-                                    className="w-full h-full object-contain p-2"
-                                />
-                                <div className="absolute top-0 right-0 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full" />
-                            </div>
-                            <h4 className="text-lg text-neutral-800 font-bold tracking-tight mb-1">iHealth Connected</h4>
-                            <p className="text-neutral-500 text-sm font-medium leading-relaxed max-w-[220px]">
-                                Your iHealth Neo is active but no readings have been synced yet.
-                            </p>
+
                         </div>
                     ) : (
-                        /* Case 3: Empty State (No logs, no connection) */
-                        <div className="flex flex-col items-center text-center py-6 px-4">
-                            <div className="w-14 h-14 bg-neutral-50 rounded-2xl flex items-center justify-center mb-4 relative">
-                                <PiHeartFill size={28} className="text-neutral-200" />
-                                <div className="absolute top-0 right-0 w-3.5 h-3.5 bg-purple-500 border-2 border-white rounded-full animate-ping" />
+                        /* Empty State: Shows -- values */
+                        <div className="flex flex-col gap-4 py-2">
+                            <div className="flex items-center justify-between">
+                                <div className="flex flex-col">
+                                    <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-1.5 px-0.5">Latest Reading</span>
+                                    <div className="flex items-baseline gap-2">
+                                        <div className="flex items-baseline gap-1">
+                                            <span className="text-4xl font-bold tracking-tight text-neutral-300">--</span>
+                                            <span className="text-neutral-300 text-2xl font-light">/</span>
+                                            <span className="text-4xl font-bold tracking-tight text-neutral-300">--</span>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-2 mt-1.5 opacity-60">
+                                        <PiClock size={12} className="text-neutral-400" />
+                                        <span className="text-xs font-medium text-neutral-400 tracking-tight">No reading logged</span>
+                                    </div>
+                                </div>
                             </div>
-                            <h4 className="text-lg text-neutral-800 font-bold tracking-tight mb-1">Track Blood Pressure</h4>
-                            <p className="text-neutral-500 text-sm font-medium leading-relaxed max-w-[220px]">
-                                Regular tracking helps you keep your heart healthy.
-                            </p>
                         </div>
                     )}
                 </div>
 
                 {/* Footer Buttons Section */}
-                <div className="flex gap-3 p-4">
+                <div className="flex gap-3 px-4 pt-3 pb-4">
                     {latestReading && (
                         <Button
                             variant="tertiary"
@@ -172,9 +137,30 @@ export default function BloodPressureWidget() {
                         onClick={() => setSheetOpen(true)}
                     >
                         <PiPlusBold size={14} className="mr-2" />
-                        {latestReading ? "LOG NEW" : "LOG FIRST"}
+                        {latestReading ? "LOG NEW" : "LOG READING"}
                     </Button>
                 </div>
+
+                {/* Connection Banner inside Widget */}
+                {(!iHealthConnected) && (
+                    <div className="px-4 pb-4">
+                        <div
+                            onClick={handleIHealthClick}
+                            className="flex items-center justify-between p-3 rounded-2xl bg-[#FFF5F0] border border-[#FFE5D6] cursor-pointer hover:bg-[#FFF0E5] transition-colors"
+                        >
+                            <div className="flex items-center gap-3">
+                                <div className="w-9 h-9 bg-white rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex items-center justify-center p-1.5 shrink-0 border border-neutral-100">
+                                    <img src={imgDevice} alt="iHealth Device" className="w-full h-full object-contain opacity-80 mix-blend-multiply" />
+                                </div>
+                                <div className="flex flex-col items-start min-w-0">
+                                    <span className="text-[10px] font-bold text-[#FF6B00] uppercase tracking-wider mb-0.5">iHealth Tracker</span>
+                                    <span className="text-sm text-[#2D3F58] font-bold tracking-tight truncate w-full">Connect your iHealth Neo</span>
+                                </div>
+                            </div>
+                            <PiArrowRight size={18} className="text-[#FF6B00] shrink-0" />
+                        </div>
+                    </div>
+                )}
             </div>
 
             {/* Log Sheet */}

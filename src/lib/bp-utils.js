@@ -13,18 +13,16 @@ export const BP_COLOR_LOGIC = {
     systolic: [
         { label: "Hypotension", min: 0, max: 89, color: "#3B82F6", textColor: "#FFFFFF", severity: 1, snap: 7.5 },
         { label: "Normal", min: 90, max: 119, color: "#22C55E", textColor: "#FFFFFF", severity: 0, snap: 25 },
-        { label: "Elevated", min: 120, max: 129, color: "#EAB308", textColor: "#000000", severity: 2, snap: 45 },
-        { label: "Stage 1 HTN", min: 130, max: 139, color: "#F97316", textColor: "#FFFFFF", severity: 3, snap: 63.5 },
-        { label: "Stage 2 HTN", min: 140, max: 179, color: "#EF4444", textColor: "#FFFFFF", severity: 4, snap: 80 },
-        { label: "HTN Crisis", min: 180, max: 999, color: "#7F1D1D", textColor: "#FFFFFF", severity: 5, snap: 94 },
+        { label: "Elevated", min: 120, max: 139, color: "#EAB308", textColor: "#000000", severity: 2, snap: 45 },
+        { label: "High", min: 140, max: 159, color: "#F97316", textColor: "#FFFFFF", severity: 3, snap: 63.5 },
+        { label: "Severe", min: 160, max: 999, color: "#EF4444", textColor: "#FFFFFF", severity: 4, snap: 80 },
     ],
     diastolic: [
         { label: "Hypotension", min: 0, max: 59, color: "#3B82F6", textColor: "#FFFFFF", severity: 1, snap: 7.5 },
         { label: "Normal", min: 60, max: 79, color: "#22C55E", textColor: "#FFFFFF", severity: 0, snap: 25 },
-        { label: "Elevated", min: 80, max: 84, color: "#EAB308", textColor: "#000000", severity: 2, snap: 45 },
-        { label: "Stage 1 HTN", min: 85, max: 89, color: "#F97316", textColor: "#FFFFFF", severity: 3, snap: 63.5 },
-        { label: "Stage 2 HTN", min: 90, max: 119, color: "#EF4444", textColor: "#FFFFFF", severity: 4, snap: 80 },
-        { label: "HTN Crisis", min: 120, max: 999, color: "#7F1D1D", textColor: "#FFFFFF", severity: 5, snap: 94 },
+        { label: "Elevated", min: 80, max: 89, color: "#EAB308", textColor: "#000000", severity: 2, snap: 45 },
+        { label: "High", min: 90, max: 109, color: "#F97316", textColor: "#FFFFFF", severity: 3, snap: 63.5 },
+        { label: "Severe", min: 110, max: 999, color: "#EF4444", textColor: "#FFFFFF", severity: 4, snap: 80 },
     ],
     pulse: [
         { label: "Bradycardia", min: 0, max: 49, color: "#EF4444", textColor: "#FFFFFF" },
@@ -60,9 +58,9 @@ export function getOverallStatus(systolic, diastolic) {
 export function getValueColor(statusLabel) {
     if (statusLabel === "Normal") return "#1d9166";
     if (statusLabel === "Hypotension") return "#1d4ed8";
-    if (statusLabel === "Elevated") return "#ca8a04";
-    if (statusLabel.includes("Stage 1")) return "#ea580c";
-    if (statusLabel.includes("Stage 2")) return "#dc2626";
+    if (statusLabel === "Elevated" || statusLabel === "Slightly Elevated") return "#ca8a04";
+    if (statusLabel.includes("High") || statusLabel.includes("Stage 1")) return "#ea580c";
+    if (statusLabel.includes("Severe") || statusLabel.includes("Stage 2")) return "#dc2626";
     if (statusLabel.includes("Crisis")) return "#7f1d1d";
     return "#2f4358";
 }
@@ -70,9 +68,9 @@ export function getValueColor(statusLabel) {
 export function getStatusBadgeStyle(statusLabel) {
     if (statusLabel === "Normal") return { bg: "#e3f5ee", text: "#195f45" };
     if (statusLabel === "Hypotension") return { bg: "#dbeafe", text: "#1e40af" };
-    if (statusLabel === "Elevated") return { bg: "#fef9c3", text: "#854d0e" };
-    if (statusLabel.includes("Stage 1")) return { bg: "#ffedd5", text: "#9a3412" };
-    if (statusLabel.includes("Stage 2")) return { bg: "#fee2e2", text: "#991b1b" };
+    if (statusLabel === "Elevated" || statusLabel === "Slightly Elevated") return { bg: "#fef9c3", text: "#854d0e" };
+    if (statusLabel.includes("High") || statusLabel.includes("Stage 1")) return { bg: "#ffedd5", text: "#9a3412" };
+    if (statusLabel.includes("Severe") || statusLabel.includes("Stage 2")) return { bg: "#fee2e2", text: "#991b1b" };
     if (statusLabel.includes("Crisis")) return { bg: "#450a0a", text: "#fca5a5" };
     return { bg: "#f2f3f4", text: "#2f4358" };
 }

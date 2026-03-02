@@ -19,9 +19,15 @@ export default function BGReadingCard({ reading, onEdit }) {
                             {reading.value}
                         </span>
                         <span className="text-sm font-medium text-neutral-500 tracking-tight">mg/dL</span>
-                        <div className="ml-1 px-2 py-0.5 bg-teal-50 rounded-full border border-teal-100/50 flex items-center justify-center">
-                            <span className="text-[11px] font-semibold text-teal-800 tracking-tight leading-none">Finger-stick</span>
-                        </div>
+                        {reading.source === 'cgm' ? (
+                            <div className="ml-1 px-2 py-0.5 bg-purple-100/50 rounded-full flex items-center justify-center">
+                                <span className="text-[11px] font-bold text-[#2D264B] tracking-tight leading-none uppercase">CGM</span>
+                            </div>
+                        ) : (
+                            <div className="ml-1 px-2 py-0.5 bg-teal-50 rounded-full flex items-center justify-center">
+                                <span className="text-[11px] font-semibold text-teal-800 tracking-tight leading-none">Finger-stick</span>
+                            </div>
+                        )}
                     </div>
 
                     <div className="flex items-center gap-1.5 opacity-80">
@@ -33,16 +39,28 @@ export default function BGReadingCard({ reading, onEdit }) {
                 </div>
 
                 <div className="flex items-center">
-                    <button
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            if (onEdit) onEdit();
-                        }}
-                        className="flex items-center gap-1 px-2 py-1 hover:bg-neutral-50 rounded-lg transition-colors"
-                    >
-                        <PiPencilSimple size={14} className="text-purple-400" />
-                        <span className="text-sm font-bold text-purple-400">Edit</span>
-                    </button>
+                    {reading.source === "cgm" ? (
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                if (onEdit) onEdit(reading);
+                            }}
+                            className="flex items-center gap-1 px-2 py-1 hover:bg-neutral-50 rounded-lg transition-colors"
+                        >
+                            <span className="text-[13px] font-bold text-purple-500">+ Add finger-stick</span>
+                        </button>
+                    ) : (
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                if (onEdit) onEdit();
+                            }}
+                            className="flex items-center gap-1 px-2 py-1 hover:bg-neutral-50 rounded-lg transition-colors"
+                        >
+                            <PiPencilSimple size={14} className="text-purple-400" />
+                            <span className="text-sm font-bold text-purple-400">Edit</span>
+                        </button>
+                    )}
                 </div>
             </div>
 

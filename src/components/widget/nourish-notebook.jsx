@@ -67,7 +67,6 @@ export default function NourishedNotebook() {
                     <h3 className="text-lg text-neutral-800 font-semibold tracking-[0.2px]">
                         Nourished Notebook
                     </h3>
-                    <PiInfo size={20} className="text-neutral-500" />
                 </div>
                 <button
                     onClick={() => router.push("/nourish-notebook")}

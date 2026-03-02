@@ -9,15 +9,16 @@ import {
     PiPlusBold,
     PiLink,
     PiWarning,
-    PiSpinnerGap,
     PiCheckCircleFill,
     PiArrowRight,
+    PiGear,
 } from "react-icons/pi";
 import { PiHeartFill } from "react-icons/pi";
 import AppHeader from "../layout/app-header";
 import DatePicker from "../layout/date-picker";
 import { Button, BottomSheet } from "../ui";
 import StressLogSheet from "../widget/stress-log-sheet";
+import PPGStressMeasure from "./ppg-stress-measure";
 import AppleHealthModal from "./apple-health-modal";
 import { useDeveloper } from "@/context/developer-context";
 import {
@@ -46,48 +47,44 @@ function AppleHealthBanner({ connected, syncing, onConnect }) {
     return (
         <div
             onClick={!connected ? onConnect : undefined}
-            className={`bg-white px-5 py-3 flex items-center gap-3 border-b border-neutral-100 ${!connected ? "cursor-pointer active:bg-neutral-50" : ""} transition-colors`}
+            className={`bg-white px-5 py-3 flex items-center justify-between border-b border-neutral-100 ${!connected ? "cursor-pointer active:bg-neutral-50" : ""} transition-colors`}
         >
-            <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center shrink-0 shadow-sm border border-neutral-100">
-                <PiHeartFill size={22} className="text-[#ff3b30]" />
-            </div>
-
-            <div className="flex-1 min-w-0">
-                {!connected ? (
-                    <>
-                        <span className="text-[10px] font-bold text-[#ff3b30] uppercase tracking-wider">Apple Health</span>
-                        <p className="text-base text-neutral-800 font-medium tracking-[0.2px] leading-tight mt-0.5">
-                            Connect to Apple Health
-                        </p>
-                    </>
-                ) : syncing ? (
-                    <>
-                        <div className="flex items-center gap-2">
-                            <PiSpinnerGap size={14} className="text-neutral-800 animate-spin shrink-0" />
-                            <p className="text-base text-neutral-800 font-medium tracking-[0.2px]">
-                                Syncing your data{dots}
+            <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shrink-0 border border-neutral-100 shadow-[0_2px_8px_rgba(0,0,0,0.02)]">
+                    <PiHeartFill size={20} className="text-[#ff3b30]" />
+                </div>
+                <div className="flex flex-col">
+                    {!connected ? (
+                        <>
+                            <span className="text-[10px] font-bold text-[#ff3b30] uppercase tracking-wider mb-0.5">Apple Health</span>
+                            <span className="text-sm text-[#2D3F58] font-bold tracking-tight">Connect to Apple Health</span>
+                        </>
+                    ) : syncing ? (
+                        <>
+                            <div className="flex items-center gap-2">
+                                <PiSpinnerGap size={14} className="text-neutral-800 animate-spin shrink-0" />
+                                <p className="text-base text-neutral-800 font-medium tracking-[0.2px]">
+                                    Syncing your data{dots}
+                                </p>
+                            </div>
+                            <p className="text-sm text-neutral-400 tracking-[0.2px] mt-0.5">
+                                Apple Health · This may take a moment
                             </p>
-                        </div>
-                        <p className="text-sm text-neutral-400 tracking-[0.2px] mt-0.5">
-                            Apple Health · This may take a moment
-                        </p>
-                    </>
-                ) : (
-                    <>
-                        <div className="flex items-center gap-1.5">
-                            <PiCheckCircleFill size={14} className="text-green-600 shrink-0" />
-                            <p className="text-base text-neutral-800 font-medium tracking-[0.2px]">
-                                Apple Health · Data up to date
-                            </p>
-                        </div>
-                        <p className="text-sm text-neutral-400 tracking-[0.2px] mt-0.5">
-                            Last synced just now
-                        </p>
-                    </>
-                )}
+                        </>
+                    ) : (
+                        <>
+                            <div className="flex items-center gap-1.5">
+                                <PiCheckCircleFill size={14} className="text-green-600 shrink-0" />
+                                <p className="text-base text-neutral-800 font-medium tracking-[0.2px]">
+                                    Apple Health · Data up to date
+                                </p>
+                            </div>
+                            <p className="text-[11px] font-medium text-neutral-400 mt-0.5">Last synced just now</p>
+                        </>
+                    )}
+                </div>
             </div>
-
-            {!connected && <PiArrowRight size={20} className="text-neutral-400 shrink-0" />}
+            {!connected && <PiArrowRight size={20} className="text-neutral-400 shrink-0 ml-2" />}
         </div>
     );
 }
@@ -112,6 +109,7 @@ export default function StressDetailScreen() {
     const [ahConnected, setAhConnected] = useState(false);
     const [syncing, setSyncing] = useState(false);
     const [modalOpen, setModalOpen] = useState(false);
+    const [ppgOpen, setPpgOpen] = useState(false);
 
     // Load logs
     useEffect(() => {
@@ -162,6 +160,21 @@ export default function StressDetailScreen() {
         setSheetOpen(false);
     };
 
+    // Handle PPG result — save as a camera-sourced HRV log
+    const handlePpgResult = (result) => {
+        const now = new Date();
+        const updated = saveStressLog({
+            date: now.toISOString().split("T")[0],
+            time: `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`,
+            hrv: result.hrv,
+            rhr: result.bpm,
+            stressScore: result.stressScore,
+            rmssd: result.rmssd,
+            source: "camera",
+        });
+        setLogs(updated);
+    };
+
     const handleDeleteClick = (log) => {
         setLogToDelete(log);
         setDeleteSheetOpen(true);
@@ -191,6 +204,11 @@ export default function StressDetailScreen() {
                 <AppHeader
                     pageTitle="Stress Tracker"
                     onBack={() => router.push("/")}
+                    rightContent={
+                        <button onClick={() => router.push("/device-management")} className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-neutral-50 transition-colors">
+                            <PiGear size={24} className="text-[#2f4358]" />
+                        </button>
+                    }
                 />
                 <DatePicker
                     mode="week"
@@ -216,58 +234,66 @@ export default function StressDetailScreen() {
                         <h2 className="text-neutral-800 text-xl font-medium tracking-[0.2px]">
                             Stress & HRV Logs
                         </h2>
-                        <Button
-                            variant="secondary"
-                            size="md"
-                            className="max-w-44"
-                            onClick={() => {
-                                setEditingLog(null);
-                                setSheetOpen(true);
-                            }}
-                        >
-                            <div className="flex items-center gap-1.5">
-                                <PiPlusBold size={12} />
-                                <span>LOG CHECK-IN</span>
-                            </div>
-                        </Button>
+                        <div className="flex items-center gap-2">
+                            <Button
+                                variant="primary"
+                                size="md"
+                                className="max-w-44"
+                                onClick={() => setPpgOpen(true)}
+                            >
+                                <div className="flex items-center gap-1.5">
+                                    <PiHeartbeat size={14} />
+                                    <span>MEASURE</span>
+                                </div>
+                            </Button>
+                            <Button
+                                variant="secondary"
+                                size="md"
+                                className="max-w-44"
+                                onClick={() => {
+                                    setEditingLog(null);
+                                    setSheetOpen(true);
+                                }}
+                            >
+                                <div className="flex items-center gap-1.5">
+                                    <PiPlusBold size={12} />
+                                    <span>LOG</span>
+                                </div>
+                            </Button>
+                        </div>
                     </div>
                 )}
 
                 <div className="px-6 pb-10">
                     {isEmpty ? (
-                        <div className="flex flex-col items-center justify-center py-20 text-center px-8 h-160">
-                            <div className="w-14 h-14 bg-amber-50 rounded-2xl flex items-center justify-center mb-6">
-                                <PiHeartbeat size={28} className="text-amber-300" />
+                        <div className="flex flex-col items-center justify-center py-20 text-center px-8 h-[60vh]">
+                            <div className="w-14 h-14 bg-[#FFF9ED] rounded-2xl flex items-center justify-center mb-6 border border-[#FDE5CA]">
+                                <PiHeartbeat size={28} className="text-[#FBBF24]" />
                             </div>
-                            <h3 className="text-neutral-800 text-xl mb-2 tracking-[0.2px] font-semibold">
+                            <h3 className="text-[#2D3F58] text-lg mb-2 tracking-tight font-bold">
                                 No stress data yet
                             </h3>
-                            <p className="text-neutral-500 text-base mb-7 leading-relaxed tracking-[0.2px]">
+                            <p className="text-neutral-500 text-[15px] mb-8 leading-relaxed tracking-tight font-medium max-w-[280px]">
                                 {toggles.deviceData && !ahConnected
                                     ? "Connect Apple Health or track your perceived stress to improve wellbeing."
                                     : "Complete a stress check-in to track your patterns and improve wellbeing."}
                             </p>
-                            <div className="flex flex-col gap-3 w-full max-w-[240px]">
-                                {toggles.deviceData && !ahConnected && (
-                                    <Button
-                                        variant="primary"
-                                        size="lg"
-                                        onClick={() => setModalOpen(true)}
-                                    >
-                                        <PiHeartFill size={18} className="mr-2" />
-                                        Connect Apple Health
-                                    </Button>
-                                )}
+                            <div className="flex flex-col gap-3 w-full max-w-[260px]">
                                 <Button
-                                    variant={toggles.deviceData && !ahConnected ? "secondary" : "primary"}
-                                    size="lg"
+                                    variant="primary"
+                                    size="xl"
                                     className="w-full"
-                                    onClick={() => {
-                                        setEditingLog(null);
-                                        setSheetOpen(true);
-                                    }}
+                                    onClick={() => setPpgOpen(true)}
                                 >
-                                    Log check-in directly
+                                    <PiHeartbeat size={18} className="mr-2" /> Measure Stress
+                                </Button>
+                                <Button
+                                    variant="secondary"
+                                    size="xl"
+                                    className="w-full"
+                                    onClick={() => { setEditingLog(null); setSheetOpen(true); }}
+                                >
+                                    Log check-in manually
                                 </Button>
                             </div>
                         </div>
@@ -326,6 +352,12 @@ export default function StressDetailScreen() {
                 onAllow={handleAllowAppleHealth}
             />
 
+            <PPGStressMeasure
+                open={ppgOpen}
+                onClose={() => setPpgOpen(false)}
+                onResult={handlePpgResult}
+            />
+
             <StressLogSheet
                 open={sheetOpen}
                 onClose={() => setSheetOpen(false)}
@@ -378,7 +410,7 @@ function StressCard({ entry, onEdit, onDelete }) {
                     </div>
                     <div className="flex flex-col">
                         <div className="flex items-baseline gap-2">
-                            {entry.source === "phone" ? (
+                            {(entry.source === "phone" || entry.source === "camera") ? (
                                 <>
                                     <span className="text-lg text-neutral-800 font-bold">{entry.hrv} <span className="text-[10px] font-medium text-neutral-500 uppercase tracking-wider relative -top-0.5">MS HRV</span></span>
                                     <span className="text-lg text-neutral-400 font-bold px-1">•</span>
@@ -391,7 +423,7 @@ function StressCard({ entry, onEdit, onDelete }) {
                         <span className="text-[11px] text-neutral-400 font-medium flex items-center mt-0.5 gap-1.5">
                             {entry.time || ""}
                             <span className="inline-block px-1.5 py-0.5 bg-neutral-100 text-neutral-500 text-[9px] font-medium rounded-md uppercase tracking-wide">
-                                {entry.source === "phone" ? "Apple Health" : "Check-in"}
+                                {entry.source === "phone" ? "Apple Health" : entry.source === "camera" ? "PPG Camera" : "Check-in"}
                             </span>
                         </span>
                     </div>

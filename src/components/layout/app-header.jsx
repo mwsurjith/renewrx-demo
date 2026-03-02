@@ -8,6 +8,8 @@ import {
 import DatePicker from './date-picker';
 
 import { usePregnancy } from "@/context/pregnancy-context";
+import { useRouter } from "next/navigation";
+import { getUnreadCount } from "@/lib/notifications-utils";
 
 /**
  * AppHeader Component
@@ -22,6 +24,23 @@ import { usePregnancy } from "@/context/pregnancy-context";
  */
 export default function AppHeader({ pageTitle, onBack, hideBack, rightContent }) {
     const { currentWeek } = usePregnancy();
+    const router = useRouter();
+    const [unreadCount, setUnreadCount] = React.useState(0);
+
+    React.useEffect(() => {
+        // Initial fetch
+        setUnreadCount(getUnreadCount());
+
+        // Update when new notification arrives or all read
+        const updateCount = () => setUnreadCount(getUnreadCount());
+        window.addEventListener("new-notification", updateCount);
+        window.addEventListener("notifications-read", updateCount);
+
+        return () => {
+            window.removeEventListener("new-notification", updateCount);
+            window.removeEventListener("notifications-read", updateCount);
+        };
+    }, []);
     // Matches the profile picture used in the Profile screen
     const imgProfile = "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=150&auto=format&fit=crop";
 
@@ -68,8 +87,14 @@ export default function AppHeader({ pageTitle, onBack, hideBack, rightContent })
                         </span>
                     </div>
                 </div>
-                <button className="w-10 h-10 rounded-full border flex items-center justify-center hover:bg-gray-50 active:bg-gray-100 transition-colors">
+                <button
+                    onClick={() => router.push("/notifications")}
+                    className="relative w-10 h-10 rounded-full border flex items-center justify-center hover:bg-gray-50 active:bg-gray-100 transition-colors"
+                >
                     <PiBell size={20} className="text-neutral-800" />
+                    {unreadCount > 0 && (
+                        <div className="absolute top-2 right-2.5 w-2 h-2 rounded-full bg-red-500 border border-white" />
+                    )}
                 </button>
             </div>
 

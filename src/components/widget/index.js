@@ -10,3 +10,4 @@ export { default as StressTrackerWidget } from './stress-tracker';
 export { default as GlucoseTrackerWidget } from './glucose-tracker';
 export { default as BGLogSheet } from './bg-log-sheet';
 export { default as BGReadingCard } from './bg-reading-card';
+export { default as CGMChart } from './cgm-chart';

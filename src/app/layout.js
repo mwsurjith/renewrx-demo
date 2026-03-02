@@ -1,6 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { PregnancyProvider } from "@/context/pregnancy-context";
+import NotificationToast from "@/components/ui/NotificationToast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,6 +30,7 @@ export default function RootLayout({ children }) {
             <PregnancyProvider>
               {children}
             </PregnancyProvider>
+            <NotificationToast />
           </DeveloperProvider>
         </div>
       </body>

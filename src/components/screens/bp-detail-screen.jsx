@@ -8,6 +8,7 @@ import {
     PiCheckCircleFill,
     PiArrowRight,
     PiPlusBold,
+    PiGear,
 } from "react-icons/pi";
 import { AppHeader } from "../layout";
 import DatePicker from "../layout/date-picker";
@@ -203,6 +204,11 @@ export default function BPDetailScreen() {
                 <AppHeader
                     pageTitle="Blood Pressure"
                     onBack={() => router.push("/")}
+                    rightContent={
+                        <button onClick={() => router.push("/device-management")} className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-neutral-50 transition-colors">
+                            <PiGear size={24} className="text-[#2f4358]" />
+                        </button>
+                    }
                 />
                 <DatePicker
                     mode="week"

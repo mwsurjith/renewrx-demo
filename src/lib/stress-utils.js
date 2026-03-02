@@ -81,8 +81,8 @@ function formatDateLabel(dateStr) {
 // ─── Level Helpers ────────────────────────────────────────────────────
 
 export function getStressLevel(log) {
-    if (log.source === "phone") {
-        // Evaluate based on HRV (higher is better)
+    if (log.source === "phone" || log.source === "camera") {
+        // Evaluate based on HRV (higher is better) — for Apple Health or PPG camera
         if (log.hrv >= 60) return { label: "Relaxed", color: "text-green-600", bg: "bg-green-50" };
         if (log.hrv >= 40) return { label: "Balanced", color: "text-amber-600", bg: "bg-amber-50" };
         return { label: "Elevated", color: "text-red-500", bg: "bg-red-50" };

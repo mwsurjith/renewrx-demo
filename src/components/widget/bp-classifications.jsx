@@ -5,65 +5,57 @@ import {
     PiCheckCircleFill,
     PiWarningFill,
     PiWarningCircleFill,
+    PiInfo
 } from "react-icons/pi";
 import BottomSheet from "../ui/bottom-sheet";
 import { getSystolicStatus, getDiastolicStatus, getPulseStatus } from "@/lib/bp-utils";
 
-/**
- * BPClassificationsSheet Component
- * 
- * Displays AHA 2017 blood pressure classification reference,
- * along with the user's current reading status.
- */
 export default function BPClassificationsSheet({ open, onClose, systolic, diastolic, pulse }) {
     const sysStatus = getSystolicStatus(systolic);
     const diaStatus = getDiastolicStatus(diastolic);
     const pulStatus = getPulseStatus(pulse);
 
-    const classifications = [
+    const guidelines = [
         {
-            icon: <PiCheckCircleFill size={20} className="text-green-500" />,
-            label: "Normal",
-            sysRange: "SYS\n<120",
-            diaRange: "DIA\n<80",
-            connector: "and",
+            icon: <PiCheckCircleFill size={22} className="text-green-500 shrink-0 mt-0.5" />,
+            title: "Normal",
+            range: "Under 120 / 80",
+            desc: "Your blood pressure is in a healthy range.",
+            bg: "bg-green-50/50",
+            border: "border-green-100"
         },
         {
-            icon: <PiWarningFill size={20} className="text-yellow-500" />,
-            label: "Elevated",
-            sysRange: "SYS\n120–129",
-            diaRange: "DIA\n<80",
-            connector: "and",
+            icon: <PiInfo size={22} className="text-yellow-500 shrink-0 mt-0.5" />,
+            title: "Slightly Elevated",
+            range: "120-139 / 80-89",
+            desc: "This is common. Practice proper resting technique and monitor your readings at your next scheduled time.",
+            bg: "bg-yellow-50/50",
+            border: "border-yellow-100"
         },
         {
-            icon: <PiWarningFill size={20} className="text-orange-500" />,
-            label: "HTN\nStage 1",
-            sysRange: "SYS\n130–139",
-            diaRange: "DIA\n80–89",
-            connector: "or",
+            icon: <PiWarningFill size={22} className="text-orange-500 shrink-0 mt-0.5" />,
+            title: "Mild to Moderate High",
+            range: "140-159 / 90-109",
+            desc: "Rest properly and check again in 4 hours. No need for middle-of-the-night alarms. If high readings persist into the next day, contact your provider.",
+            bg: "bg-orange-50/50",
+            border: "border-orange-100"
         },
         {
-            icon: <PiWarningCircleFill size={20} className="text-red-500" />,
-            label: "HTN\nStage 2",
-            sysRange: "SYS\n≥140",
-            diaRange: "DIA\n≥90",
-            connector: "or",
-        },
-        {
-            icon: <PiWarningCircleFill size={20} className="text-red-900" />,
-            label: "HTN\nCrisis",
-            sysRange: "SYS\n≥180",
-            diaRange: "DIA\n≥120",
-            connector: "or",
-        },
+            icon: <PiWarningCircleFill size={22} className="text-red-600 shrink-0 mt-0.5" />,
+            title: "Severe",
+            range: "160 / 110 or higher",
+            desc: "Requires urgent evaluation. Contact your provider or seek medical care immediately. Do not wait.",
+            bg: "bg-red-50/50",
+            border: "border-red-100"
+        }
     ];
 
     return (
-        <BottomSheet open={open} onClose={onClose} title="US Classifications" zIndex={200}>
+        <BottomSheet open={open} onClose={onClose} title="Blood Pressure Guidelines" zIndex={200}>
             {/* Current Reading Summary */}
-            <div className="bg-neutral-50 rounded-xl p-4 mb-6">
-                <p className="text-xs text-neutral-400 mb-3 font-medium">
-                    Your Current Reading:
+            <div className="bg-neutral-50 rounded-2xl p-4 mb-5 border border-neutral-100">
+                <p className="text-[10px] text-neutral-500 mb-3 font-bold uppercase tracking-widest">
+                    Your Current Reading
                 </p>
                 <div className="flex gap-6">
                     {[
@@ -72,13 +64,13 @@ export default function BPClassificationsSheet({ open, onClose, systolic, diasto
                         { label: "PULSE", value: pulse, status: pulStatus },
                     ].map(({ label, value, status }) => (
                         <div key={label}>
-                            <span className="text-[11px] text-neutral-400">{label}</span>
-                            <div className="flex items-baseline gap-2">
-                                <span className="text-2xl font-semibold text-neutral-800 tabular-nums">
+                            <span className="text-[11px] text-neutral-500 font-bold">{label}</span>
+                            <div className="flex items-center gap-2 mt-0.5">
+                                <span className="text-[26px] font-bold text-neutral-800 tracking-tight leading-none">
                                     {value}
                                 </span>
                                 <span
-                                    className="text-[10px] px-2 py-0.5 rounded font-medium"
+                                    className="text-[10px] px-2 py-0.5 rounded-md font-bold uppercase tracking-widest"
                                     style={{ backgroundColor: status.color, color: status.textColor }}
                                 >
                                     {status.label}
@@ -89,42 +81,28 @@ export default function BPClassificationsSheet({ open, onClose, systolic, diasto
                 </div>
             </div>
 
-            {/* Classification Grid */}
-            <div className="border border-neutral-200 rounded-xl overflow-hidden">
-                <div className="grid grid-cols-5">
-                    {classifications.map((item, idx) => (
-                        <div
-                            key={idx}
-                            className="border-r last:border-r-0 border-neutral-200 bg-neutral-50 p-2 flex flex-col items-center"
-                        >
-                            <div className="mb-1.5 h-5 flex items-center justify-center">
-                                {item.icon}
+            <div className="flex flex-col gap-3">
+                {guidelines.map((g, i) => (
+                    <div key={i} className={`flex gap-3 p-4 rounded-2xl border ${g.border} ${g.bg}`}>
+                        {g.icon}
+                        <div className="flex flex-col gap-1 min-w-0">
+                            <div className="flex items-center justify-between">
+                                <span className="text-[15px] font-bold text-neutral-800 tracking-tight leading-none">{g.title}</span>
+                                <span className="text-xs font-bold text-neutral-500 tracking-tight">{g.range}</span>
                             </div>
-                            <p className="text-[9px] text-neutral-800 font-semibold text-center mb-2 whitespace-pre-line leading-tight h-8 flex items-center justify-center">
-                                {item.label}
-                            </p>
-                            <div className="flex flex-col items-center mb-2">
-                                <div className="w-0.5 h-2 bg-neutral-400" />
-                                <div className="w-1.5 h-1.5 rounded-full bg-neutral-400 my-0.5" />
-                                <div className="w-0.5 h-2 bg-neutral-400" />
-                            </div>
-                            <p className="text-[9px] text-neutral-400 text-center whitespace-pre-line mb-1.5 leading-tight">
-                                {item.sysRange}
-                            </p>
-                            <p className="text-[9px] text-neutral-400 mb-1.5 font-medium">
-                                {item.connector}
-                            </p>
-                            <p className="text-[9px] text-neutral-400 text-center whitespace-pre-line leading-tight">
-                                {item.diaRange}
+                            <p className="text-[13px] font-medium text-neutral-600 leading-relaxed mt-1">
+                                {g.desc}
                             </p>
                         </div>
-                    ))}
-                </div>
+                    </div>
+                ))}
             </div>
 
-            <p className="text-[10px] text-neutral-400 mt-4 text-center">
-                Based on AHA 2017 guidelines
-            </p>
+            <div className="mt-4 p-4 rounded-xl bg-violet-50">
+                <p className="text-[13px] text-violet-800 font-medium leading-relaxed tracking-[0.2px]">
+                    <span className="font-bold">When to act:</span> Always contact your provider immediately if you experience symptoms exactly as prescribed such as severe headache, blurry vision, or other concerning signs, regardless of your reading metric.
+                </p>
+            </div>
         </BottomSheet>
     );
 }
