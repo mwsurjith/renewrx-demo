@@ -8,8 +8,11 @@ export const DeveloperProvider = ({ children }) => {
     const [toggles, setToggles] = useState({
         insulin: false,
         bloodPressure: true,
+        bloodGlucose: true,
         wakeUpTime: true,
-        sleepStress: true,
+        sleepTracking: true,
+        stressTracking: true,
+        deviceData: true,
         bumfie: true,
         nourishNotebook: true,
         onboardingChecklist: true,

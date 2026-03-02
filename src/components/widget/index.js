@@ -5,3 +5,8 @@ export { default as BPClassificationsSheet } from './bp-classifications';
 export { default as BPReadingCard } from './bp-reading-card';
 export { default as LogFoodSheet } from './log-food-sheet';
 export { default as NutritionInfoSheet } from './nutrition-info-sheet';
+export { default as SleepTrackerWidget } from './sleep-tracker';
+export { default as StressTrackerWidget } from './stress-tracker';
+export { default as GlucoseTrackerWidget } from './glucose-tracker';
+export { default as BGLogSheet } from './bg-log-sheet';
+export { default as BGReadingCard } from './bg-reading-card';

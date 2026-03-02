@@ -10,13 +10,16 @@ export default function DeveloperOptionsScreen({ onBack }) {
     const { toggles, toggleFeature } = useDeveloper();
 
     const options = [
-        { key: "insulin", label: "Insulin during nourish notebook" },
-        { key: "bloodPressure", label: "Blood Pressure" },
-        { key: "wakeUpTime", label: "Wake up time" },
-        { key: "sleepStress", label: "Sleep & Stress tracker" },
-        { key: "bumfie", label: "Bumfie" },
+        { key: "wakeUpTime", label: "Wake up time (Not done)" },
         { key: "nourishNotebook", label: "Nourish Notebook" },
-        { key: "onboardingChecklist", label: "Onboarding Checklist" },
+        { key: "insulin", label: "  ↳ With Insulin", indent: true },
+        { key: "bloodPressure", label: "Blood Pressure" },
+        { key: "bloodGlucose", label: "Blood Glucose" },
+        { key: "sleepTracking", label: "Sleep Tracking" },
+        { key: "deviceData", label: "  ↳ Phone Fetch Available", indent: true },
+        { key: "stressTracking", label: "Stress Tracking" },
+        { key: "bumfie", label: "Bumfie (Not done)" },
+        { key: "onboardingChecklist", label: "Onboarding Checklist (Not done)" },
     ];
 
     return (
