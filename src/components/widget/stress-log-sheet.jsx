@@ -13,7 +13,7 @@ export default function StressLogSheet({ open, onClose, onLog, initialData = nul
     const [time, setTime] = useState("");
     const [stressLevel, setStressLevel] = useState(null); // 1-5 scale
 
-    const stressLevels = [0, 1, 2, 3, 4, 5];
+    const stressLevels = [1, 2, 3, 4, 5];
 
     useEffect(() => {
         if (open) {
@@ -71,15 +71,18 @@ export default function StressLogSheet({ open, onClose, onLog, initialData = nul
                                     : "border-neutral-200 bg-white hover:bg-neutral-50"
                                     }`}
                             >
-                                <span className={`text-[20px] font-bold leading-none ${stressLevel === val ? "text-purple-600" : "text-neutral-700"}`}>
-                                    {val}
-                                </span>
+                                <div className={`flex flex-col items-center ${stressLevel === val ? "text-purple-600" : "text-neutral-700"}`}>
+                                    <span className="text-[20px] font-bold leading-none">{val}</span>
+                                    <span className="text-[14px] leading-none mt-1 h-[14px] flex items-center justify-center">
+                                        {val === 1 ? "😌" : val === 5 ? "😫" : ""}
+                                    </span>
+                                </div>
                             </button>
                         ))}
                     </div>
                     <div className="flex justify-between mt-2 px-1">
-                        <span className="text-[10px] text-neutral-400 font-medium tracking-tight">0: Not stressed</span>
-                        <span className="text-[10px] text-neutral-400 font-medium tracking-tight">5: Highly stressed</span>
+                        <span className="text-[10px] text-neutral-400 font-medium tracking-tight">1: Very relaxed</span>
+                        <span className="text-[10px] text-neutral-400 font-medium tracking-tight">5: Very stressed</span>
                     </div>
                 </div>
             </div>

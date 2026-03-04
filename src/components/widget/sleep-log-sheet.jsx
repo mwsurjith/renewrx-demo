@@ -14,7 +14,7 @@ export default function SleepLogSheet({ open, onClose, onLog, initialData = null
     const [wakeTime, setWakeTime] = useState("");
     const [quality, setQuality] = useState(null);
 
-    const qualities = [0, 1, 2, 3, 4, 5];
+    const qualities = [1, 2, 3, 4, 5];
 
     useEffect(() => {
         if (open) {
@@ -108,15 +108,18 @@ export default function SleepLogSheet({ open, onClose, onLog, initialData = null
                                     : "border-neutral-200 bg-white hover:bg-neutral-50"
                                     }`}
                             >
-                                <span className={`text-[20px] font-bold leading-none ${quality === val ? "text-purple-600" : "text-neutral-700"}`}>
-                                    {val}
-                                </span>
+                                <div className={`flex flex-col items-center ${quality === val ? "text-purple-600" : "text-neutral-700"}`}>
+                                    <span className="text-[20px] font-bold leading-none">{val}</span>
+                                    <span className="text-[14px] leading-none mt-1 h-[14px] flex items-center justify-center">
+                                        {val === 1 ? "😣" : val === 5 ? "😴" : ""}
+                                    </span>
+                                </div>
                             </button>
                         ))}
                     </div>
                     <div className="flex justify-between mt-2 px-1">
-                        <span className="text-[10px] text-neutral-400 font-medium tracking-tight">0: Bad sleep</span>
-                        <span className="text-[10px] text-neutral-400 font-medium tracking-tight">5: Great sleep</span>
+                        <span className="text-[10px] text-neutral-400 font-medium tracking-tight">1: Poor sleep</span>
+                        <span className="text-[10px] text-neutral-400 font-medium tracking-tight">5: Good sleep</span>
                     </div>
                 </div>
             </div>

@@ -6,18 +6,18 @@ const DeveloperContext = createContext(null);
 
 export const DeveloperProvider = ({ children }) => {
     const [toggles, setToggles] = useState({
+        wakeUpTime: false,
+        nourishNotebook: true,
         insulin: false,
         bloodPressure: true,
-        iHealthIntegration: true,
-        bloodGlucose: true,
-        wakeUpTime: true,
+        iHealthIntegration: false,
+        bloodGlucose: false,
         sleepTracking: true,
+        deviceData: false,
         stressTracking: true,
-        appleHealthIntegration: true,
-        deviceData: true,
-        bumfie: true,
-        nourishNotebook: true,
-        onboardingChecklist: true,
+        appleHealthIntegration: false,
+        bumfie: false,
+        onboardingChecklist: false,
     });
 
     useEffect(() => {

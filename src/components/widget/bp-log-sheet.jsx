@@ -21,11 +21,11 @@ import {
 // ─── Constants ──────────────────────────────────────────────────────
 
 const CONTEXT_TAGS = [
-    "Morning",
-    "Evening",
     "Before Meds",
     "After Meds",
     "After Exercise",
+    "Feeling Stressed",
+    "Not Fully Rested",
 ];
 
 // ─── Status Bar Sub-component ───────────────────────────────────────
@@ -341,6 +341,16 @@ export default function BPLogSheet({ open, onClose, onLog, initialReading = null
                         onToggle={toggleTag}
                     />
                 </div>
+
+                {/* High BP Disclaimer */}
+                {(systolic >= 140 || diastolic >= 90) && (
+                    <div className="mb-6 p-4 rounded-xl bg-red-50 border border-red-100 flex items-start gap-3">
+                        <PiWarningCircleFill size={20} className="text-red-500 shrink-0 mt-0.5" />
+                        <p className="text-xs text-red-800 font-medium leading-relaxed">
+                            <span className="font-bold">Disclaimer:</span> If you are experiencing symptoms such as dizziness, severe headache, or blurry vision, please contact your doctor immediately.
+                        </p>
+                    </div>
+                )}
 
                 {/* Submit */}
                 <div className="flex flex-col gap-3">
