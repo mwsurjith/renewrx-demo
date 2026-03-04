@@ -14,12 +14,7 @@ export default function SleepLogSheet({ open, onClose, onLog, initialData = null
     const [wakeTime, setWakeTime] = useState("");
     const [quality, setQuality] = useState(null);
 
-    const qualities = [
-        { value: 1, emoji: "😫", label: "Poor" },
-        { value: 2, emoji: "😐", label: "Fair" },
-        { value: 3, emoji: "😊", label: "Good" },
-        { value: 4, emoji: "😴", label: "Great" },
-    ];
+    const qualities = [0, 1, 2, 3, 4, 5];
 
     useEffect(() => {
         if (open) {
@@ -54,7 +49,7 @@ export default function SleepLogSheet({ open, onClose, onLog, initialData = null
         if (dur >= 420 && dur <= 540) score += 30; // 7-9h ideal
         else if (dur >= 360) score += 20;
         else if (dur >= 300) score += 10;
-        if (quality) score += quality * 5;
+        if (quality !== null) score += (quality - 2) * 4; // 2 -> no change, 0 -> -8, 5 -> +12
         return Math.min(100, Math.max(0, score));
     };
 
@@ -70,7 +65,7 @@ export default function SleepLogSheet({ open, onClose, onLog, initialData = null
             wakeTime,
             duration,
             score,
-            quality: quality || 2,
+            quality: quality !== null ? quality : 3,
             source: "manual",
         });
         onClose();
@@ -104,19 +99,24 @@ export default function SleepLogSheet({ open, onClose, onLog, initialData = null
                         Sleep Quality
                     </label>
                     <div className="flex gap-2">
-                        {qualities.map((q) => (
+                        {qualities.map((val) => (
                             <button
-                                key={q.value}
-                                onClick={() => setQuality(q.value)}
-                                className={`flex-1 flex flex-col items-center gap-1 py-3 rounded-xl border transition-all ${quality === q.value
+                                key={val}
+                                onClick={() => setQuality(val)}
+                                className={`flex-1 flex flex-col items-center justify-center py-3 rounded-xl border transition-all ${quality === val
                                     ? "border-purple-300 bg-purple-50"
                                     : "border-neutral-200 bg-white hover:bg-neutral-50"
                                     }`}
                             >
-                                <span className="text-xl">{q.emoji}</span>
-                                <span className="text-[10px] font-semibold text-neutral-500">{q.label}</span>
+                                <span className={`text-[20px] font-bold leading-none ${quality === val ? "text-purple-600" : "text-neutral-700"}`}>
+                                    {val}
+                                </span>
                             </button>
                         ))}
+                    </div>
+                    <div className="flex justify-between mt-2 px-1">
+                        <span className="text-[10px] text-neutral-400 font-medium tracking-tight">0: Bad sleep</span>
+                        <span className="text-[10px] text-neutral-400 font-medium tracking-tight">5: Great sleep</span>
                     </div>
                 </div>
             </div>

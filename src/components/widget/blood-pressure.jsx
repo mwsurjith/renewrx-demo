@@ -6,6 +6,7 @@ import { PiArrowRight, PiPlusBold, PiCheckCircleFill, PiArrowUpRightBold, PiHear
 import { Button } from "../ui";
 import { BPLogSheet, BPReadingCard } from "@/components/widget";
 import { getBPReadings, getIHealthConnected } from "@/lib/bp-utils";
+import { useDeveloper } from "@/context/developer-context";
 
 /**
  * BloodPressureWidget Component
@@ -15,6 +16,7 @@ import { getBPReadings, getIHealthConnected } from "@/lib/bp-utils";
  */
 export default function BloodPressureWidget() {
     const router = useRouter();
+    const { toggles } = useDeveloper();
     const [sheetOpen, setSheetOpen] = useState(false);
     const [iHealthConnected, setIHealthConnected] = useState(false);
     const [latestReading, setLatestReading] = useState(null);
@@ -142,7 +144,7 @@ export default function BloodPressureWidget() {
                 </div>
 
                 {/* Connection Banner inside Widget */}
-                {(!iHealthConnected) && (
+                {(!iHealthConnected && toggles.iHealthIntegration) && (
                     <div className="px-4 pb-4">
                         <div
                             onClick={handleIHealthClick}

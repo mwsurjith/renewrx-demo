@@ -75,8 +75,8 @@ export default function StressReadingCard({ entry, onEdit, onDelete, showEdit = 
                                 </>
                             ) : (
                                 <>
-                                    <span className={`text-xl font-bold tracking-tight ${levelInfo.color}`}>
-                                        {levelInfo.label}
+                                    <span className={`text-2xl font-bold tracking-[-0.5px] tabular-nums ${levelInfo.color}`}>
+                                        Level {entry.stressLevel}
                                     </span>
                                 </>
                             )}
@@ -107,7 +107,7 @@ export default function StressReadingCard({ entry, onEdit, onDelete, showEdit = 
                             )}
                         </div>
                         <span className={`text-[10px] font-bold uppercase tracking-[0.05em] px-1 ${levelInfo.color}`}>
-                            {levelInfo.label}
+                            {(entry.source === "phone" || entry.source === "camera") ? levelInfo.label : `Level ${entry.stressLevel}`}
                         </span>
                     </div>
                 </div>

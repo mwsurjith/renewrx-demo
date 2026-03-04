@@ -91,7 +91,7 @@ export default function SleepTrackerWidget() {
                                     </div>
                                     <div className={`p-2 ${scoreInfo.bg} rounded-2xl flex items-center justify-center min-w-[70px]`}>
                                         <span className={`text-[10px] font-bold ${scoreInfo.color} uppercase tracking-widest leading-none text-center`}>
-                                            {scoreInfo.label}
+                                            {latest.source === "manual" && latest.quality !== undefined ? `Quality ${latest.quality}` : scoreInfo.label}
                                         </span>
                                     </div>
                                 </div>

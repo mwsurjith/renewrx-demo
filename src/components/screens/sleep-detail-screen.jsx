@@ -412,7 +412,7 @@ function SleepCard({ entry, onEdit, onDelete }) {
                 <div className="flex items-center gap-1 shrink-0">
                     <div className={`px-2 py-1 ${scoreInfo.bg} rounded-lg mr-1 hidden sm:block`}>
                         <span className={`text-[10px] font-bold ${scoreInfo.color} uppercase tracking-wider`}>
-                            {scoreInfo.label}
+                            {entry.source === "manual" && entry.quality !== undefined ? `Quality ${entry.quality}` : scoreInfo.label}
                         </span>
                     </div>
                     <button

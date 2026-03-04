@@ -87,9 +87,9 @@ export function getStressLevel(log) {
         if (log.hrv >= 40) return { label: "Balanced", color: "text-amber-600", bg: "bg-amber-50" };
         return { label: "Elevated", color: "text-red-500", bg: "bg-red-50" };
     } else {
-        // Manual perceived stress (1: Very Calm to 5: Very Stressed)
-        if (log.stressLevel <= 2) return { label: "Relaxed", color: "text-green-600", bg: "bg-green-50" };
-        if (log.stressLevel === 3) return { label: "Neutral", color: "text-amber-600", bg: "bg-amber-50" };
+        // Manual perceived stress (0: No Stress to 5: Very Stressed)
+        if (log.stressLevel <= 1) return { label: "Relaxed", color: "text-green-600", bg: "bg-green-50" };
+        if (log.stressLevel <= 3) return { label: "Neutral", color: "text-amber-600", bg: "bg-amber-50" };
         return { label: "Stressed", color: "text-red-500", bg: "bg-red-50" };
     }
 }

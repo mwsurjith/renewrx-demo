@@ -219,7 +219,7 @@ export default function StressDetailScreen() {
                 />
 
                 {/* Apple Health Banner */}
-                {toggles.deviceData && (
+                {toggles.deviceData && toggles.appleHealthIntegration && (
                     <AppleHealthBanner
                         connected={ahConnected}
                         syncing={syncing}
@@ -240,7 +240,14 @@ export default function StressDetailScreen() {
                             variant="secondary"
                             size="md"
                             className="w-auto px-4 !h-10 text-[13px] font-bold"
-                            onClick={() => setModeSheetOpen(true)}
+                            onClick={() => {
+                                if (toggles.appleHealthIntegration) {
+                                    setModeSheetOpen(true);
+                                } else {
+                                    setEditingLog(null);
+                                    setSheetOpen(true);
+                                }
+                            }}
                         >
                             <PiPlusBold size={14} className="mr-2" />
                             ADD LOG
@@ -267,7 +274,14 @@ export default function StressDetailScreen() {
                                     variant="primary"
                                     size="xl"
                                     className="w-full !h-14 font-bold tracking-tight text-base"
-                                    onClick={() => setModeSheetOpen(true)}
+                                    onClick={() => {
+                                        if (toggles.appleHealthIntegration) {
+                                            setModeSheetOpen(true);
+                                        } else {
+                                            setEditingLog(null);
+                                            setSheetOpen(true);
+                                        }
+                                    }}
                                 >
                                     <PiPlusBold size={20} className="mr-2" /> Start Tracking
                                 </Button>

@@ -27,6 +27,7 @@ import {
     setIHealthConnected as persistIHealthConnected,
     generateIHealthSyncedReadings,
 } from "@/lib/bp-utils";
+import { useDeveloper } from "@/context/developer-context";
 
 
 // ─── IHealthBanner ──────────────────────────────────────────────────
@@ -100,6 +101,7 @@ function IHealthBanner({ connected, syncing, syncComplete, onConnect }) {
 export default function BPDetailScreen() {
     const router = useRouter();
     const searchParams = useSearchParams();
+    const { toggles } = useDeveloper();
 
     const [readings, setReadings] = useState([]);
     const [selectedDate, setSelectedDate] = useState(new Date());
@@ -215,12 +217,14 @@ export default function BPDetailScreen() {
                     value={selectedDate}
                     onChange={setSelectedDate}
                 />
-                <IHealthBanner
-                    connected={iHealthConnected}
-                    syncing={syncing}
-                    syncComplete={syncComplete}
-                    onConnect={handleConnect}
-                />
+                {toggles.iHealthIntegration && (
+                    <IHealthBanner
+                        connected={iHealthConnected}
+                        syncing={syncing}
+                        syncComplete={syncComplete}
+                        onConnect={handleConnect}
+                    />
+                )}
             </div>
 
             {/* Scrollable content */}
@@ -263,7 +267,10 @@ export default function BPDetailScreen() {
                                 No readings yet
                             </h3>
                             <p className="text-neutral-500 text-base mb-7 leading-relaxed tracking-[0.2px]">
-                                Log your blood pressure manually or connect your iHealth device to get started.
+                                {toggles.iHealthIntegration ?
+                                    "Log your blood pressure manually or connect your iHealth device to get started." :
+                                    "Log your blood pressure manually to get started."
+                                }
                             </p>
                             <Button
                                 variant="primary"

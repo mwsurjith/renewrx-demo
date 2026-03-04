@@ -14,10 +14,12 @@ export default function DeveloperOptionsScreen({ onBack }) {
         { key: "nourishNotebook", label: "Nourish Notebook" },
         { key: "insulin", label: "  ↳ With Insulin", indent: true },
         { key: "bloodPressure", label: "Blood Pressure" },
+        { key: "iHealthIntegration", label: "  ↳ iHealth Connect", indent: true },
         { key: "bloodGlucose", label: "Blood Glucose" },
         { key: "sleepTracking", label: "Sleep Tracking" },
         { key: "deviceData", label: "  ↳ Phone Fetch Available", indent: true },
         { key: "stressTracking", label: "Stress Tracking" },
+        { key: "appleHealthIntegration", label: "  ↳ Apple Health Connect", indent: true },
         { key: "bumfie", label: "Bumfie (Not done)" },
         { key: "onboardingChecklist", label: "Onboarding Checklist (Not done)" },
     ];

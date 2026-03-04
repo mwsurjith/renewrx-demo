@@ -100,7 +100,9 @@ export default function StressTrackerWidget() {
                                                     <span className="text-sm text-neutral-400 font-bold tracking-wider uppercase relative -top-1">ms HRV</span>
                                                 </>
                                             ) : (
-                                                <span className="text-2xl font-bold tracking-tight text-neutral-800 leading-none pb-1">{levelInfo.label}</span>
+                                                <span className="text-2xl font-bold tracking-tight text-neutral-800 leading-none pb-1">
+                                                    {(latest.source === "phone" || latest.source === "camera") ? levelInfo.label : `Level ${latest.stressLevel}`}
+                                                </span>
                                             )}
                                         </div>
                                         <div className="flex items-center gap-2 mt-1 opacity-60">
@@ -113,7 +115,7 @@ export default function StressTrackerWidget() {
                                     {(latest.source === "phone" || latest.source === "camera") && (
                                         <div className={`p-2 ${levelInfo.bg} rounded-2xl flex items-center justify-center min-w-[70px]`}>
                                             <span className={`text-[10px] font-bold ${levelInfo.color} uppercase tracking-widest leading-none text-center`}>
-                                                {levelInfo.label}
+                                                {(latest.source === "phone" || latest.source === "camera") ? levelInfo.label : `Level ${latest.stressLevel}`}
                                             </span>
                                         </div>
                                     )}
@@ -171,14 +173,20 @@ export default function StressTrackerWidget() {
                         variant="secondary"
                         className="flex-1"
                         size="lg"
-                        onClick={() => setModeSheetOpen(true)}
+                        onClick={() => {
+                            if (toggles.appleHealthIntegration) {
+                                setModeSheetOpen(true);
+                            } else {
+                                setSheetOpen(true);
+                            }
+                        }}
                     >
                         {latest ? "CHECK-IN" : "LOG CHECK-IN"}
                     </Button>
                 </div>
 
                 {/* Connection Banner inside Widget */}
-                {toggles.deviceData && !ahConnected && (
+                {toggles.deviceData && toggles.appleHealthIntegration && !ahConnected && (
                     <div className="px-4 pb-4">
                         <div
                             onClick={() => router.push("/stress-tracker")}
