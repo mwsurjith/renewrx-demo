@@ -210,19 +210,7 @@ export default function SleepDetailScreen() {
                 />
 
                 {/* Device banner logic */}
-                {!toggles.deviceData ? (
-                    <div className="bg-amber-50 px-5 py-3 flex items-center gap-3 border-b border-neutral-100">
-                        <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center shrink-0 shadow-sm border border-neutral-100">
-                            <PiDeviceMobileSlash size={18} className="text-neutral-400" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                            <span className="text-[10px] font-bold text-amber-600 uppercase tracking-wider">Phone Data</span>
-                            <p className="text-sm text-neutral-800 font-medium tracking-[0.2px] leading-tight">
-                                Device data not supported or turned off
-                            </p>
-                        </div>
-                    </div>
-                ) : (
+                {toggles.deviceData && toggles.appleHealthIntegration && (
                     <AppleHealthBanner
                         connected={ahConnected}
                         syncing={syncing}
@@ -275,7 +263,7 @@ export default function SleepDetailScreen() {
                                 No sleep data yet
                             </h3>
                             <p className="text-neutral-500 text-[15px] mb-8 leading-relaxed tracking-tight font-medium max-w-[280px]">
-                                {toggles.deviceData && !ahConnected
+                                {toggles.deviceData && toggles.appleHealthIntegration && !ahConnected
                                     ? "Connect Apple Health or log your sleep to track patterns and improve your rest."
                                     : "Log your sleep to track patterns and improve your rest."
                                 }

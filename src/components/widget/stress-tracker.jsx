@@ -84,77 +84,65 @@ export default function StressTrackerWidget() {
             {/* Card */}
             <div className="bg-white rounded-3xl border overflow-hidden">
                 <div className="p-4 pb-0">
-                    {toggles.deviceData ? (
-                        latest ? (
-                            /* Has data */
-                            <div className="flex flex-col gap-3 py-2">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex flex-col">
-                                        <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-1.5 px-0.5">
-                                            {(latest.source === "phone" || latest.source === "camera") ? "Latest Check" : "Perceived Stress"}
-                                        </span>
-                                        <div className="flex items-baseline gap-1.5">
-                                            {(latest.source === "phone" || latest.source === "camera") ? (
-                                                <>
-                                                    <span className="text-4xl font-bold tracking-tight text-neutral-800">{latest.hrv}</span>
-                                                    <span className="text-sm text-neutral-400 font-bold tracking-wider uppercase relative -top-1">ms HRV</span>
-                                                </>
-                                            ) : (
-                                                <span className="text-2xl font-bold tracking-tight text-neutral-800 leading-none pb-1">
-                                                    {(latest.source === "phone" || latest.source === "camera") ? levelInfo.label : `Level ${latest.stressLevel}`}
-                                                </span>
-                                            )}
-                                        </div>
-                                        <div className="flex items-center gap-2 mt-1 opacity-60">
-                                            <PiHeartbeat size={14} className="text-neutral-400" />
-                                            <span className="text-xs font-medium text-neutral-500 tracking-tight">
-                                                {(latest.source === "phone" || latest.source === "camera") ? (latest.source === "camera" ? "PPG Camera" : "Apple Health") : "Check-in"} • {latest.time}
-                                            </span>
-                                        </div>
-                                    </div>
-                                    {(latest.source === "phone" || latest.source === "camera") && (
-                                        <div className={`p-2 ${levelInfo.bg} rounded-2xl flex items-center justify-center min-w-[70px]`}>
-                                            <span className={`text-[10px] font-bold ${levelInfo.color} uppercase tracking-widest leading-none text-center`}>
+                    {latest ? (
+                        /* Has data */
+                        <div className="flex flex-col gap-3 py-2">
+                            <div className="flex items-center justify-between">
+                                <div className="flex flex-col">
+                                    <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-1.5 px-0.5">
+                                        {(latest.source === "phone" || latest.source === "camera") ? "Latest Check" : "Perceived Stress"}
+                                    </span>
+                                    <div className="flex items-baseline gap-1.5">
+                                        {(latest.source === "phone" || latest.source === "camera") ? (
+                                            <>
+                                                <span className="text-4xl font-bold tracking-tight text-neutral-800">{latest.hrv}</span>
+                                                <span className="text-sm text-neutral-400 font-bold tracking-wider uppercase relative -top-1">ms HRV</span>
+                                            </>
+                                        ) : (
+                                            <span className="text-2xl font-bold tracking-tight text-neutral-800 leading-none pb-1">
                                                 {(latest.source === "phone" || latest.source === "camera") ? levelInfo.label : `Level ${latest.stressLevel}`}
                                             </span>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        ) : (
-                            /* Empty State: Shows -- values */
-                            <div className="flex flex-col gap-3 py-2">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex flex-col">
-                                        <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-1.5 px-0.5">
-                                            Latest Check
+                                        )}
+                                    </div>
+                                    <div className="flex items-center gap-2 mt-1 opacity-60">
+                                        <PiHeartbeat size={14} className="text-neutral-400" />
+                                        <span className="text-xs font-medium text-neutral-500 tracking-tight">
+                                            {(latest.source === "phone" || latest.source === "camera") ? (latest.source === "camera" ? "PPG Camera" : "Apple Health") : "Check-in"} • {latest.time}
                                         </span>
-                                        <div className="flex items-baseline gap-1.5">
-                                            <span className="text-4xl font-bold tracking-tight text-neutral-300">--</span>
-                                            <span className="text-sm text-neutral-300 font-bold tracking-wider uppercase relative -top-1">ms HRV</span>
-                                        </div>
-                                        <div className="flex items-center gap-2 mt-1 opacity-60">
-                                            <PiHeartbeat size={14} className="text-neutral-400" />
-                                            <span className="text-xs font-medium text-neutral-400 tracking-tight">
-                                                No check-in logged
-                                            </span>
-                                        </div>
+                                    </div>
+                                </div>
+                                {(latest.source === "phone" || latest.source === "camera") && (
+                                    <div className={`p-2 ${levelInfo.bg} rounded-2xl flex items-center justify-center min-w-[70px]`}>
+                                        <span className={`text-[10px] font-bold ${levelInfo.color} uppercase tracking-widest leading-none text-center`}>
+                                            {(latest.source === "phone" || latest.source === "camera") ? levelInfo.label : `Level ${latest.stressLevel}`}
+                                        </span>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    ) : (
+                        /* Empty State: Shows -- values */
+                        <div className="flex flex-col gap-3 py-2">
+                            <div className="flex items-center justify-between">
+                                <div className="flex flex-col">
+                                    <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-1.5 px-0.5">
+                                        Latest Check
+                                    </span>
+                                    <div className="flex items-baseline gap-1.5">
+                                        <span className="text-4xl font-bold tracking-tight text-neutral-300">--</span>
+                                        <span className="text-sm text-neutral-300 font-bold tracking-wider uppercase relative -top-1">ms HRV</span>
+                                    </div>
+                                    <div className="flex items-center gap-2 mt-1 opacity-60">
+                                        <PiHeartbeat size={14} className="text-neutral-400" />
+                                        <span className="text-xs font-medium text-neutral-400 tracking-tight">
+                                            No check-in logged
+                                        </span>
                                     </div>
                                 </div>
                             </div>
-                        )
-                    ) : (
-                        /* Device data disabled */
-                        <div className="flex flex-col items-center text-center py-6 px-4">
-                            <div className="w-14 h-14 bg-neutral-100 rounded-2xl flex items-center justify-center mb-4">
-                                <PiDeviceMobileSlash size={28} className="text-neutral-300" />
-                            </div>
-                            <h4 className="text-base text-neutral-700 font-bold tracking-tight mb-1">Device Data Not Supported</h4>
-                            <p className="text-neutral-400 text-sm font-medium leading-relaxed max-w-[240px]">
-                                Phone health data is turned off or not available on this device.
-                            </p>
                         </div>
-                    )}
+                    )
+                    }
                 </div>
 
                 {/* Footer buttons */}

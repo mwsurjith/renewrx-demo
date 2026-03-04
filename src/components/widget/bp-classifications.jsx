@@ -57,20 +57,20 @@ export default function BPClassificationsSheet({ open, onClose, systolic, diasto
                 <p className="text-[10px] text-neutral-500 mb-3 font-bold uppercase tracking-widest">
                     Your Current Reading
                 </p>
-                <div className="flex gap-6">
+                <div className="grid grid-cols-3 gap-2 w-full">
                     {[
                         { label: "SYS", value: systolic, status: sysStatus },
                         { label: "DIA", value: diastolic, status: diaStatus },
                         { label: "PULSE", value: pulse, status: pulStatus },
                     ].map(({ label, value, status }) => (
-                        <div key={label}>
+                        <div key={label} className="flex flex-col min-w-0">
                             <span className="text-[11px] text-neutral-500 font-bold">{label}</span>
-                            <div className="flex items-center gap-2 mt-0.5">
+                            <div className="flex flex-wrap items-center gap-1 mt-0.5">
                                 <span className="text-[26px] font-bold text-neutral-800 tracking-tight leading-none">
                                     {value}
                                 </span>
                                 <span
-                                    className="text-[10px] px-2 py-0.5 rounded-md font-bold uppercase tracking-widest"
+                                    className="text-[9px] px-1.5 py-0.5 rounded-md font-bold uppercase tracking-widest leading-none truncate max-w-full"
                                     style={{ backgroundColor: status.color, color: status.textColor }}
                                 >
                                     {status.label}

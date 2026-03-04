@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { PiX, PiPlus, PiInfo, PiTrashSimple } from "react-icons/pi";
+import { PiX, PiPlus, PiInfo, PiTrashSimple, PiCheckCircleFill, PiWarningFill, PiWarningCircleFill } from "react-icons/pi";
 import { Button, DateField, TimeField } from "../ui";
 import BottomSheet from "../ui/bottom-sheet";
 import ScrollWheel from "../ui/scroll-wheel";
@@ -34,13 +34,16 @@ function BPStatusBar({ systolic, diastolic, onInfoClick }) {
     const status = getOverallStatus(systolic, diastolic);
     const pos = status.snap ?? 50;
 
+    const labelUpper = status.label.toUpperCase();
+    let StatusIcon = PiCheckCircleFill;
+    if (labelUpper.includes("SEVERE") || labelUpper.includes("CRISIS")) StatusIcon = PiWarningCircleFill;
+    else if (labelUpper.includes("HIGH")) StatusIcon = PiWarningFill;
+    else if (labelUpper.includes("ELEVATED")) StatusIcon = PiInfo;
+
     return (
         <div className="flex flex-col items-center gap-2 mt-3">
             <div className="flex items-center gap-1.5">
-                <div
-                    className="w-2.5 h-2.5 rounded-full"
-                    style={{ backgroundColor: status.color }}
-                />
+                <StatusIcon size={18} style={{ color: status.color }} />
                 <span className="text-[15px] text-neutral-800 font-semibold">
                     {status.label}
                 </span>

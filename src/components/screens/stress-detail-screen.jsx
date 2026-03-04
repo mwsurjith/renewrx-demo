@@ -239,7 +239,7 @@ export default function StressDetailScreen() {
                         <Button
                             variant="secondary"
                             size="md"
-                            className="w-auto px-4 !h-10 text-[13px] font-bold"
+                            className="max-w-40"
                             onClick={() => {
                                 if (toggles.appleHealthIntegration) {
                                     setModeSheetOpen(true);
@@ -249,8 +249,10 @@ export default function StressDetailScreen() {
                                 }
                             }}
                         >
-                            <PiPlusBold size={14} className="mr-2" />
-                            ADD LOG
+                            <div className="flex items-center gap-1.5">
+                                <PiPlusBold size={12} />
+                                <span>ADD LOG</span>
+                            </div>
                         </Button>
                     </div>
                 )}
@@ -265,7 +267,7 @@ export default function StressDetailScreen() {
                                 No stress data yet
                             </h3>
                             <p className="text-neutral-500 text-[15px] mb-8 leading-relaxed tracking-tight font-medium max-w-[280px]">
-                                {toggles.deviceData && !ahConnected
+                                {toggles.deviceData && toggles.appleHealthIntegration && !ahConnected
                                     ? "Connect Apple Health or track your perceived stress to improve wellbeing."
                                     : "Complete a stress check-in to track your patterns and improve wellbeing."}
                             </p>

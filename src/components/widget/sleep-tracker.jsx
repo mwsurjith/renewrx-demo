@@ -68,87 +68,75 @@ export default function SleepTrackerWidget() {
             {/* Card */}
             <div className="bg-white rounded-3xl border overflow-hidden">
                 <div className="p-4 pb-0">
-                    {toggles.deviceData ? (
-                        latest ? (
-                            /* Has data */
-                            <div className="flex flex-col gap-3 py-2">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex flex-col">
-                                        <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-1.5 px-0.5">
-                                            Last Night
+                    {latest ? (
+                        /* Has data */
+                        <div className="flex flex-col gap-3 py-2">
+                            <div className="flex items-center justify-between">
+                                <div className="flex flex-col">
+                                    <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-1.5 px-0.5">
+                                        Last Night
+                                    </span>
+                                    <div className="flex items-baseline gap-2">
+                                        <span className="text-4xl font-bold tracking-tight text-neutral-800">
+                                            {formatDuration(latest.duration)}
                                         </span>
-                                        <div className="flex items-baseline gap-2">
-                                            <span className="text-4xl font-bold tracking-tight text-neutral-800">
-                                                {formatDuration(latest.duration)}
-                                            </span>
-                                        </div>
-                                        <div className="flex items-center gap-2 mt-1.5 opacity-60">
-                                            <PiMoon size={12} className="text-neutral-400" />
-                                            <span className="text-xs font-medium text-neutral-500 tracking-tight">
-                                                {latest.bedtime} – {latest.wakeTime}
-                                            </span>
-                                        </div>
                                     </div>
-                                    <div className={`p-2 ${scoreInfo.bg} rounded-2xl flex items-center justify-center min-w-[70px]`}>
-                                        <span className={`text-[10px] font-bold ${scoreInfo.color} uppercase tracking-widest leading-none text-center`}>
-                                            {latest.source === "manual" && latest.quality !== undefined ? `Quality ${latest.quality}` : scoreInfo.label}
+                                    <div className="flex items-center gap-2 mt-1.5 opacity-60">
+                                        <PiMoon size={12} className="text-neutral-400" />
+                                        <span className="text-xs font-medium text-neutral-500 tracking-tight">
+                                            {latest.bedtime} – {latest.wakeTime}
                                         </span>
                                     </div>
                                 </div>
+                                <div className={`p-2 ${scoreInfo.bg} rounded-2xl flex items-center justify-center min-w-[70px]`}>
+                                    <span className={`text-[10px] font-bold ${scoreInfo.color} uppercase tracking-widest leading-none text-center`}>
+                                        {latest.source === "manual" && latest.quality !== undefined ? `Quality ${latest.quality}` : scoreInfo.label}
+                                    </span>
+                                </div>
+                            </div>
 
-                                {/* Sleep stages mini-bar */}
-                                {latest.stages && latest.source === "phone" && (
-                                    <div className="mt-1">
-                                        <div className="flex rounded-full overflow-hidden h-2">
-                                            <div className="bg-indigo-700" style={{ width: `${latest.stages.deep}%` }} />
-                                            <div className="bg-indigo-400" style={{ width: `${latest.stages.light}%` }} />
-                                            <div className="bg-purple-400" style={{ width: `${latest.stages.rem}%` }} />
-                                            <div className="bg-neutral-200" style={{ width: `${latest.stages.awake}%` }} />
-                                        </div>
-                                        <div className="flex justify-between mt-1.5">
-                                            <span className="text-[9px] text-neutral-400 font-medium">Deep</span>
-                                            <span className="text-[9px] text-neutral-400 font-medium">Light</span>
-                                            <span className="text-[9px] text-neutral-400 font-medium">REM</span>
-                                            <span className="text-[9px] text-neutral-400 font-medium">Awake</span>
-                                        </div>
+                            {/* Sleep stages mini-bar */}
+                            {latest.stages && latest.source === "phone" && (
+                                <div className="mt-1">
+                                    <div className="flex rounded-full overflow-hidden h-2">
+                                        <div className="bg-indigo-700" style={{ width: `${latest.stages.deep}%` }} />
+                                        <div className="bg-indigo-400" style={{ width: `${latest.stages.light}%` }} />
+                                        <div className="bg-purple-400" style={{ width: `${latest.stages.rem}%` }} />
+                                        <div className="bg-neutral-200" style={{ width: `${latest.stages.awake}%` }} />
                                     </div>
-                                )}
-                            </div>
-                        ) : (
-                            /* Empty State: Shows -- values */
-                            <div className="flex flex-col gap-3 py-2">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex flex-col">
-                                        <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-1.5 px-0.5">
-                                            Last Night
+                                    <div className="flex justify-between mt-1.5">
+                                        <span className="text-[9px] text-neutral-400 font-medium">Deep</span>
+                                        <span className="text-[9px] text-neutral-400 font-medium">Light</span>
+                                        <span className="text-[9px] text-neutral-400 font-medium">REM</span>
+                                        <span className="text-[9px] text-neutral-400 font-medium">Awake</span>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    ) : (
+                        /* Empty State: Shows -- values */
+                        <div className="flex flex-col gap-3 py-2">
+                            <div className="flex items-center justify-between">
+                                <div className="flex flex-col">
+                                    <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-1.5 px-0.5">
+                                        Last Night
+                                    </span>
+                                    <div className="flex items-baseline gap-2">
+                                        <span className="text-4xl font-bold tracking-tight text-neutral-300">
+                                            --h --m
                                         </span>
-                                        <div className="flex items-baseline gap-2">
-                                            <span className="text-4xl font-bold tracking-tight text-neutral-300">
-                                                --h --m
-                                            </span>
-                                        </div>
-                                        <div className="flex items-center gap-2 mt-1.5 opacity-60">
-                                            <PiMoon size={12} className="text-neutral-400" />
-                                            <span className="text-xs font-medium text-neutral-400 tracking-tight">
-                                                No sleep logged
-                                            </span>
-                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-2 mt-1.5 opacity-60">
+                                        <PiMoon size={12} className="text-neutral-400" />
+                                        <span className="text-xs font-medium text-neutral-400 tracking-tight">
+                                            No sleep logged
+                                        </span>
                                     </div>
                                 </div>
                             </div>
-                        )
-                    ) : (
-                        /* Device data disabled */
-                        <div className="flex flex-col items-center text-center py-6 px-4">
-                            <div className="w-14 h-14 bg-neutral-100 rounded-2xl flex items-center justify-center mb-4">
-                                <PiDeviceMobileSlash size={28} className="text-neutral-300" />
-                            </div>
-                            <h4 className="text-base text-neutral-700 font-bold tracking-tight mb-1">Device Data Not Supported</h4>
-                            <p className="text-neutral-400 text-sm font-medium leading-relaxed max-w-[240px]">
-                                Phone health data is turned off or not available on this device.
-                            </p>
                         </div>
-                    )}
+                    )
+                    }
                 </div>
 
                 {/* Footer buttons */}
