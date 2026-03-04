@@ -12,6 +12,7 @@ export default function StressLogSheet({ open, onClose, onLog, initialData = nul
     const [date, setDate] = useState("");
     const [time, setTime] = useState("");
     const [stressLevel, setStressLevel] = useState(null); // 1-5 scale
+    const [note, setNote] = useState("");
 
     const stressLevels = [1, 2, 3, 4, 5];
 
@@ -21,11 +22,13 @@ export default function StressLogSheet({ open, onClose, onLog, initialData = nul
                 setDate(initialData.date || "");
                 setTime(initialData.time || "");
                 setStressLevel(initialData.stressLevel || null);
+                setNote(initialData.note || "");
             } else {
                 const now = new Date();
                 setDate(now.toISOString().split("T")[0]);
                 setTime(`${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`);
                 setStressLevel(null);
+                setNote("");
             }
         }
     }, [open, initialData]);
@@ -38,6 +41,7 @@ export default function StressLogSheet({ open, onClose, onLog, initialData = nul
             date,
             time,
             stressLevel,
+            note: note.trim() || undefined,
             source: "manual",
         });
         onClose();
@@ -59,7 +63,7 @@ export default function StressLogSheet({ open, onClose, onLog, initialData = nul
                 {/* Subjective Scale */}
                 <div>
                     <label className="text-[10px] text-neutral-400 font-bold uppercase tracking-wider mb-2 block">
-                        How are you feeling?
+                        How stressed do you feel?
                     </label>
                     <div className="flex gap-2">
                         {stressLevels.map((val) => (
@@ -84,6 +88,21 @@ export default function StressLogSheet({ open, onClose, onLog, initialData = nul
                         <span className="text-[10px] text-neutral-400 font-medium tracking-tight">1: Very relaxed</span>
                         <span className="text-[10px] text-neutral-400 font-medium tracking-tight">5: Very stressed</span>
                     </div>
+                </div>
+
+                {/* Note Input */}
+                <div className="flex flex-col">
+                    <label className="text-[10px] text-neutral-400 font-bold uppercase tracking-wider mb-2 block">
+                        Add a note (optional)
+                    </label>
+                    <textarea
+                        value={note}
+                        onChange={(e) => setNote(e.target.value)}
+                        placeholder="What's causing this?"
+                        maxLength={500}
+                        rows={3}
+                        className="w-full resize-none rounded-xl border border-neutral-200 p-4 text-[15px] font-medium tracking-[0.2px] text-neutral-800 placeholder:text-neutral-400 outline-none focus:border-neutral-300 transition-colors bg-white shadow-sm"
+                    />
                 </div>
             </div>
 

@@ -112,7 +112,6 @@ export default function StressReadingCard({ entry, onEdit, onDelete, showEdit = 
                     </div>
                 </div>
 
-                {/* Optional RMSSD or tags? */}
                 {entry.rmssd && (
                     <div className="mt-1 pt-3 border-t border-neutral-50 flex items-center gap-4">
                         <div className="flex flex-col">
@@ -125,6 +124,13 @@ export default function StressReadingCard({ entry, onEdit, onDelete, showEdit = 
                                 <span className="text-[13px] font-bold text-neutral-700">{entry.stressScore}</span>
                             </div>
                         )}
+                    </div>
+                )}
+                {entry.note && (
+                    <div className="mt-1 pt-2 border-t border-neutral-50">
+                        <p className="text-[13px] font-medium text-neutral-600 leading-relaxed italic">
+                            &quot;{entry.note}&quot;
+                        </p>
                     </div>
                 )}
             </div>
