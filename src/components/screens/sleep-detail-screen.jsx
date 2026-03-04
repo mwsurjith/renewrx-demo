@@ -27,6 +27,7 @@ import {
     getSleepLogs,
     saveSleepLog,
     deleteSleepLog,
+    updateSleepLog,
     saveSleepLogs,
     groupSleepByDate,
     getSleepScoreLabel,
@@ -163,7 +164,12 @@ export default function SleepDetailScreen() {
     }, [syncing]);
 
     const handleLog = (data) => {
-        const updated = saveSleepLog(data);
+        let updated;
+        if (editingLog) {
+            updated = updateSleepLog(editingLog.id, data);
+        } else {
+            updated = saveSleepLog(data);
+        }
         setLogs(updated);
         setSheetOpen(false);
     };

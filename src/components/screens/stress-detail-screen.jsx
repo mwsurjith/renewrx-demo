@@ -26,6 +26,7 @@ import {
     getStressLogs,
     saveStressLog,
     deleteStressLog,
+    updateStressLog,
     generateAppleHealthSyncedStressReadings,
     groupStressByDate,
     getStressLevel,
@@ -157,7 +158,12 @@ export default function StressDetailScreen() {
     }, [logs, selectedDate]);
 
     const handleLog = (data) => {
-        const updated = saveStressLog(data);
+        let updated;
+        if (editingLog) {
+            updated = updateStressLog(editingLog.id, data);
+        } else {
+            updated = saveStressLog(data);
+        }
         setLogs(updated);
         setSheetOpen(false);
     };
